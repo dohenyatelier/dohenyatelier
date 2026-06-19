@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doheny Atelier</title>
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://use.typekit.net/gfl8gha.css" />
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div class="splash" id="splash">
+    <img src="images/DA_Logo.png" alt="Doheny Atelier" class="splash-logo" />
+    <p class="splash-hint">click anywhere to enter</p>
+  </div>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor-label" id="cursorLabel">View case study</div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="comingsoon.html" class="nav-link">Work</a>
+    <a href="about.html" class="nav-link">About</a>
+    <a href="index.html" class="nav-logo">
+      <img src="images/DA_Logo.png" alt="Doheny Atelier" class="nav-logo-img" />
+    </a>
+    <a href="comingsoon.html" class="nav-link">Expertise</a>
+    <a href="#footer" class="nav-link">Contact</a>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="mobile-nav">
+      <a href="comingsoon.html">Work</a>
+      <a href="about.html">About</a>
+      <a href="comingsoon.html">Expertise</a>
+      <a href="#footer">Contact</a>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="images/glowbar-1.png" alt="Glowbar Expert Cleanser" class="hero-img hero-img--active" />
+    <img src="images/kylie-1.png" alt="Kylie Cosmetics" class="hero-img" />
+    <img src="images/obagi-1.png" alt="Obagi Medical" class="hero-img" />
+  </section>
+
+  <!-- TAGLINE -->
+  <section class="tagline">
+    <p>A design agency that creates brands<br>worth reaching for—and remembering.</p>
+  </section>
+
+  <!-- FEATURED WORKS -->
+  <section class="works">
+    <h6 class="section-label">Featured Works</h6>
+    <div class="works-grid">
+
+      <div class="work-item" data-href="work-pages/kylierebrand.html">
+        <div class="work-img-wrap">
+          <img src="images/kylie-1.png" alt="Kylie Cosmetics" loading="lazy" />
+        </div>
+        <h5 class="work-title">Kylie Cosmetics</h5>
+        <p class="work-desc">Worked alongside Kylie Jenner to design her full packaging rebrand on both primary and secondary components</p>
+      </div>
+
+      <div class="work-item">
+        <div class="work-img-wrap">
+          <img src="images/glowbar-1.png" alt="GlowBar" loading="lazy" />
+        </div>
+        <h5 class="work-title">Glowbar</h5>
+        <p class="work-desc">Designed Glowbar's first-ever retail product; the Expert Cleanser, as well as newly launched Simple Solution</p>
+      </div>
+
+      <div class="work-item">
+        <div class="work-img-wrap">
+          <img src="images/obagi-1.png" alt="Obagi Medical" loading="lazy" />
+        </div>
+        <h5 class="work-title">Obagi Medical</h5>
+        <p class="work-desc">Designed Obagi's new logo identity as well as packaging for a cohesive system across all product categories</p>
+      </div>
+
+    </div>
+    <div class="works-more">
+      <a href="comingsoon.html" class="view-more">View more work →</a>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services">
+    <p class="services-headline">From first sketch to final shelf—let's make your brand impossible to ignore.</p>
+    <div class="services-grid">
+      <div class="service-item">
+        <h6 class="service-name">Branding &amp; Strategy</h6>
+        <p class="service-desc">Visual Identity | Branding Strategy | Storytelling</p>
+      </div>
+      <div class="service-item">
+        <h6 class="service-name">Product &amp; 3D Design</h6>
+        <p class="service-desc">3D Modeling &amp; Rendering | Concept Development</p>
+      </div>
+      <div class="service-item">
+        <h6 class="service-name">Graphic Design</h6>
+        <p class="service-desc">Illustration | Campaign Visualization | Packaging Design</p>
+      </div>
+      <div class="service-item">
+        <h6 class="service-name">Experiential Design</h6>
+        <p class="service-desc">3D Modeling &amp; Rendering | Concept Development</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT CTA -->
+  <footer class="footer" id="footer">
+    <div class="footer-left">
+      <img src="images/Da_Icon_light.png" alt="Doheny Atelier Icon" class="footer-icon" />
+    </div>
+    <div class="footer-right">
+      <p class="footer-headline">Have a project in mind?</p>
+      <p class="footer-sub"><em>Let's connect:</em></p>
+      <a href="mailto:hey@dohenyatelier.com" class="footer-email">hey@dohenyatelier.com</a>
+      <div class="footer-social">
+        <a href="https://www.linkedin.com/company/doheny-atelier/" target="_blank" rel="noopener" class="footer-social-link"><img src="images/linkedin-icon.png" alt="LinkedIn" /></a>
+        <a href="https://www.instagram.com/dohenyatelier" target="_blank" rel="noopener" class="footer-social-link"><img src="images/icon-03.png" alt="Instagram" /></a>
+      </div>
+    </div>
+    <div class="footer-copy">
+      <p>© 2026 Doheny Atelier. All rights reserved.</p>
+    </div>
+  </footer>
+
+<script src="https://unpkg.com/lenis@1.3.23/dist/lenis.min.js"></script>
+  <script>new Lenis({ autoRaf: true, autoToggle: true, anchors: true, allowNestedScroll: true, naiveDimensions: true, stopInertiaOnNavigate: true })</script>
+  <script src="js/mobile.js"></script>
+  <script src="js/gsap.min.js"></script>
+  <script src="js/ScrollTrigger.min.js"></script>
+  <script src="js/SplitText.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/transitions.js"></script>
+  <script src="js/skeleton.js"></script>
+</body>
+</html>
