@@ -29,6 +29,9 @@
 </head>
 <body>
 
+  <!-- Scroll-to-top target (top of page) -->
+  <span id="cs-top" aria-hidden="true"></span>
+
   <div class="cursor-label" id="cursorLabel"><span class="cursor-label-inner">View case study</span></div>
 
   <!-- NAV -->
@@ -148,8 +151,19 @@
     </div>
   </footer>
 
+  <!-- SCROLL-TO-TOP: progress-indicating donut (graphite fill = scroll progress).
+       Pure-CSS conic fill; js/backtotop.js reveals it + inverts over dark sections. -->
+  <a href="#cs-top" class="cs-totop" aria-label="Back to top">
+    <span>Back to top</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 19V5" />
+      <path d="M5 12l7-7 7 7" />
+    </svg>
+  </a>
+
   <script src="https://unpkg.com/lenis@1.3.23/dist/lenis.min.js"></script>
-  <script>new Lenis({ autoRaf: true, autoToggle: true, anchors: true, allowNestedScroll: true, naiveDimensions: true, stopInertiaOnNavigate: true })</script>
+  <script>window.lenis = new Lenis({ autoRaf: true, autoToggle: true, anchors: true, allowNestedScroll: true, naiveDimensions: true, stopInertiaOnNavigate: true })</script>
   <script src="/js/mobile.js"></script>
   <script src="/js/transitions.js"></script>
   <script>
@@ -172,6 +186,8 @@
       el.addEventListener('mouseleave', () => label.classList.remove('visible'));
     });
   </script>
+  <script src="/js/scrollbar.js"></script>
+  <script src="/js/backtotop.js"></script>
   <script src="/js/skeleton.js"></script>
 </body>
 </html>
