@@ -163,3 +163,186 @@ if (document.querySelector('.cs-deliverables') && window.innerWidth > 768) {
     el.addEventListener('mouseleave', () => label.classList.remove('visible'));
   });
 })();
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CASE-STUDY HEADER + HERO BEHAVIOURS
+   Moved out of each case study's inline <script> so every case study page shares
+   ONE copy of this logic — edit an animation here once and it updates on every
+   page. Each block guards its own elements (early-returns if they're absent), so
+   the whole section is inert on pages that don't have a case-study header.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Meta alignment: line the Client / Services columns up under the Expertise
+   and Contact nav links, and give the header body a min-height so the
+   absolutely-positioned meta never overlaps the description. ── */
+function alignMeta() {
+  // Mobile: meta flows normally (CSS), and the nav links it aligns to are
+  // hidden — so skip the desktop column math entirely.
+  if (window.innerWidth <= 768) return;
+  const meta = document.querySelector('.cs-meta');
+  if (!meta) return;                       // not a case-study header — nothing to align
+  const navLinks = document.querySelectorAll('.nav-link');
+  const expertise = navLinks[2];
+  const contact   = navLinks[3];
+  const metaLeft  = meta.getBoundingClientRect().left;
+
+  const eLeft = expertise.getBoundingClientRect().left - metaLeft;
+  const cLeft = contact.getBoundingClientRect().left - metaLeft;
+
+  document.documentElement.style.setProperty('--cs-col-client',   eLeft + 'px');
+  document.documentElement.style.setProperty('--cs-col-services', cLeft + 'px');
+
+  const metaHeight = Math.max(
+    document.querySelector('.cs-meta-col:first-child').offsetHeight,
+    document.querySelector('.cs-meta-col:last-child').offsetHeight
+  );
+  const descHeight = document.querySelector('.cs-desc').offsetHeight;
+  document.querySelector('.cs-header-body').style.minHeight =
+    Math.max(metaHeight, descHeight) + 'px';
+}
+
+document.addEventListener('DOMContentLoaded', alignMeta);
+document.fonts.ready.then(alignMeta);
+window.addEventListener('resize', alignMeta);
+
+/* ── View More: expand a 50% left panel, shrinking the hero column ── */
+(function () {
+  const wrap = document.getElementById('csExpand');
+  const btn  = document.getElementById('csViewMore');
+  if (!wrap || !btn) return;
+  const panel = wrap.querySelector('.cs-expand-panel');
+  const copyEl = wrap.querySelector('.cs-expand-panel-inner');
+  const label = btn.querySelector('.cs-viewmore-label');
+
+  // Mobile: the panel is a plain in-flow toggle (CSS). Skip the sticky-pin
+  // and scroll-hold machinery — it assumes the desktop side-by-side layout
+  // and the width animation, neither of which exists on mobile.
+  const isMobile = window.innerWidth <= 768;
+
+  // Sticky toggle: the button rides the page from its home spot, then pins
+  // just below the nav once it reaches that line (JS-driven because its
+  // flow parent is too short for CSS position:sticky to travel).
+  const nav     = document.querySelector('.nav');
+  const navLine = (nav ? nav.offsetHeight : 80) + 16;
+  document.documentElement.style.setProperty('--cs-stuck-top', navLine + 'px');
+  let homeTop = null;
+
+  function measureHome() {
+    // Read the button's natural (flow) document position. If it's currently
+    // pinned, briefly drop the pin to measure, then restore it. Otherwise,
+    // once homeTop gets reset to null while stuck (fonts.ready / resize fire
+    // while you're scrolled down — common now the page is tall), the old
+    // early-return meant it could never be re-measured, so the pin condition
+    // stayed true forever and the button floated at the top of the page even
+    // after scrolling back up.
+    const wasStuck = btn.classList.contains('is-stuck');
+    if (wasStuck) { btn.classList.remove('is-stuck'); btn.style.top = ''; }
+    homeTop = btn.getBoundingClientRect().top + window.scrollY;
+    if (wasStuck) btn.classList.add('is-stuck');
+  }
+
+  function updateStick() {
+    if (homeTop === null) measureHome();
+    if (homeTop - window.scrollY <= navLine) {
+      // Pinned below the nav so it's reachable while scrolling. Bounded by
+      // the bottom of the left COPY when open (rides up as the copy ends),
+      // or by the whole 2-col SECTION when closed (stays available over the
+      // heroes, then releases before the deliverables).
+      const boundEl = wrap.classList.contains('expanded') ? copyEl : wrap;
+      const boundBottom = boundEl.getBoundingClientRect().bottom;
+      btn.classList.add('is-stuck');
+      btn.style.top = Math.min(navLine, boundBottom - btn.offsetHeight) + 'px';
+    } else {
+      btn.classList.remove('is-stuck');
+      btn.style.top = '';
+      measureHome();
+    }
+  }
+
+  let ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { updateStick(); ticking = false; });
+  }
+  if (!isMobile) {
+    window.addEventListener('scroll', onScroll, { passive: true });
+    if (window.lenis && window.lenis.on) window.lenis.on('scroll', onScroll);
+    window.addEventListener('resize', function () { homeTop = null; updateStick(); });
+    updateStick();
+    document.fonts.ready.then(function () { homeTop = null; updateStick(); });
+  }
+
+  // Toggling resizes the hero column over 0.8s, changing page height —
+  // opening shrinks it (heroes go half-width), closing grows it back. Hold
+  // your *proportional* spot within the section so the viewport stays on the
+  // same content: if the top sits 60% of the way through the heroes, it stays
+  // at 60% as the height animates. This must run on BOTH open and close —
+  // holding only on open let each close grow the section back underneath a
+  // fixed scroll position, walking you up the page over repeated toggles.
+  function holdProportional() {
+    const rect0 = wrap.getBoundingClientRect();
+    const wrapTopDoc = rect0.top + window.scrollY;
+    if (window.scrollY <= wrapTopDoc - navLine) return;  // above the section; nothing to hold
+    // 0 = viewport top at the section top, 1 = at the section bottom.
+    const frac = Math.max(0, Math.min(1, (window.scrollY - wrapTopDoc) / rect0.height));
+    const start = performance.now();
+    (function hold(now) {
+      const y = wrapTopDoc + frac * wrap.getBoundingClientRect().height;
+      if (Math.abs(y - window.scrollY) > 0.5) {
+        if (window.lenis && window.lenis.scrollTo) window.lenis.scrollTo(y, { immediate: true });
+        else window.scrollTo(0, y);
+      }
+      if ((now || performance.now()) - start < 880) requestAnimationFrame(hold);
+    })(start);
+  }
+
+  btn.addEventListener('click', function () {
+    const opening = !wrap.classList.contains('expanded');
+    if (opening) {
+      wrap.classList.add('expanded');
+      btn.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+      label.textContent = 'Close';
+      if (!isMobile) {
+        holdProportional();
+        measureHome();
+        updateStick();
+      }
+    } else {
+      wrap.classList.remove('expanded');
+      btn.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+      label.textContent = 'Learn More';
+      if (!isMobile) {
+        holdProportional();
+        updateStick();   // re-evaluate: stay pinned if still scrolled past the nav
+      }
+    }
+  });
+
+  // Hero column changes height when the panel opens/closes — keep the
+  // deliverables stacking in sync once the width animation settles.
+  wrap.addEventListener('transitionend', function (e) {
+    if (e.target !== panel || e.propertyName !== 'flex-basis') return;
+    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+  });
+})();
+
+/* ── YouTube facade: swap the poster for the real iframe on click, so the heavy
+   iframe only loads when the visitor actually wants to watch. The video ID lives
+   in the page markup (data-id on #ytFacade), the behaviour lives here. ── */
+(function () {
+  const facade = document.getElementById('ytFacade');
+  if (!facade) return;
+  facade.addEventListener('click', function () {
+    const iframe = document.createElement('iframe');
+    iframe.src = 'https://www.youtube.com/embed/' + facade.dataset.id + '?autoplay=1&rel=0';
+    iframe.title = 'YouTube video player';
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+    iframe.allowFullscreen = true;
+    facade.replaceWith(iframe);   // sized by the existing .cs-youtube-video iframe rule
+  });
+})();
