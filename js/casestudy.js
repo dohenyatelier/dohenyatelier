@@ -43,6 +43,7 @@ if (document.querySelector('.cs-deliverables') && window.innerWidth > 768) {
   // on reload" bug. Reading geometry live can't go stale: for whatever the
   // current scroll and layout are, the state is recomputed correctly.
   const collapsed = new WeakMap();
+  const exitTweens = new WeakMap();   // running collapse tween per row, so we can kill it on reverse
   const syncDescriptions = (animate) => {
     const vh = window.innerHeight;
     if (!vh) return;                                       // ignore degenerate layout passes
@@ -54,21 +55,32 @@ if (document.querySelector('.cs-deliverables') && window.innerWidth > 768) {
       const shouldCollapse = img.getBoundingClientRect().bottom < vh / 2;
       const was = collapsed.get(row);
       collapsed.set(row, shouldCollapse);
-      // opacity 1 here so the body fades fully out/in; the muted look of the
-      // description comes from its own CSS opacity (the product list stays full).
-      const COLLAPSED = { height: 0, paddingTop: 0, opacity: 0 };
-      const SHOWN     = { height: 'auto', paddingTop: 16, opacity: 1 };
+      // Height only — paddingTop stays 16 in both states, so the title→text gap is
+      // frozen and the text never rides up as the body wipes closed. No opacity:
+      // the muted description look comes from .cs-row-desc's own CSS opacity.
+      const COLLAPSED = { height: 0, paddingTop: 16 };
+      const SHOWN     = { height: 'auto', paddingTop: 16 };
+      const killExit = () => { const t = exitTweens.get(row); if (t) t.kill(); };
       if (animate) {
         // Live scroll: only act on a transition; animate the collapse, snap open.
-        // (gsap.to is a tween — it needs the RAF ticker, which live scroll has.)
+        // (gsap tweens need the RAF ticker, which live scroll has.)
         if (was === shouldCollapse) return;
-        if (shouldCollapse) gsap.to(body, { ...COLLAPSED, duration: 0.5, ease: 'power2.out', overwrite: true });
-        else gsap.set(body, SHOWN);
+        killExit();
+        if (shouldCollapse) {
+          // Wipe up: NO fade, HEIGHT ONLY (paddingTop is frozen at 16). The body
+          // rolls up from the bottom — content is top-anchored and clipped by the
+          // body's overflow:hidden, so the bottom clips while the top line holds
+          // its gap below the title instead of drifting up into the pinned header.
+          exitTweens.set(row, gsap.to(body, { height: 0, duration: 0.5, ease: 'power3.inOut' }));
+        } else {
+          gsap.set(body, SHOWN);
+        }
       } else {
         // Snap (load / resize / scroll-restoration): ALWAYS assert the correct
         // state instantly. Never skip on prior state — an interrupted or
         // not-yet-ticked animation can leave the DOM out of sync with it — and
         // use set() so it doesn't depend on a ticker frame having run.
+        killExit();
         gsap.set(body, shouldCollapse ? COLLAPSED : SHOWN);
       }
     });
