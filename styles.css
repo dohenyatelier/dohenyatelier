@@ -257,10 +257,81 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
 }
 .tagline p {
   font-family: var(--font-body);
-  font-size: 2vw;
+  font-size: 1.85vw;
   letter-spacing: var(--ls-body);
   line-height: var(--lh-body);
   color: var(--graphite);
+  margin: 0;
+}
+/* "the Design Agency" opener; the italic D and A (via <em>) echo the
+   Doheny Atelier initials. Gap separates it from the statement below.
+   Needs `p.tagline-lead` to outrank `.tagline p { margin: 0 }` above. */
+.tagline p.tagline-lead {
+  margin-bottom: 0.3em;
+  font-size:2.3vw;
+}
+
+/* ── Client logo marquee (CSS-only infinite scroll, right → left) ─ */
+.logo-marquee {
+  width: 50vw;              /* banner spans half the viewport… */
+  margin: 120px auto 0;     /* …and is centered */
+  --marquee-scale: 0.55;    /* global size knob — smaller logos → shorter band */
+}
+
+.logo-marquee-viewport {
+  overflow: hidden; /* clip the over-wide track */
+}
+
+.logo-marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  will-change: transform;
+  animation: logo-marquee-scroll 32s linear infinite;
+}
+
+/* pause the scroll while hovering anywhere over the banner */
+.logo-marquee:hover .logo-marquee-track {
+  animation-play-state: paused;
+}
+
+/* The track holds two identical logo sets; sliding exactly one set-width
+   (−50%) loops seamlessly. Each logo owns equal left/right padding, so the
+   gap at the seam matches every other gap — no jump at the loop point. */
+@keyframes logo-marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-logo {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3vw;
+  /* reserve the band height so the row never collapses to 0 before the
+     images decode (the tallest mark, Kylie's 3-line lockup, sets it) */
+  min-height: calc(60px * var(--marquee-scale, 0.8));
+}
+
+/* Optical-weight sizing (same principle as the About client wall): size by
+   a per-logo target width so every mark reads at a comparable cap-height.
+   --logo-w is set inline per logo so it travels with the image on reorder. */
+.marquee-logo img {
+  /* optical-weight sizing: each logo sized by target WIDTH (--logo-w, inline
+     per logo) with height auto, so multi-line lockups read at a comparable
+     cap-height instead of being crushed to equal box height */
+  width: calc(var(--logo-w, 150px) * var(--marquee-scale, 0.8));
+  height: auto;
+  object-fit: contain;
+  /* recolor every (transparent-PNG) logo to brand graphite: brightness(0) makes
+     the opaque pixels black, invert(0.161) lifts black → rgb(41,41,41) = #292929 */
+  filter: brightness(0) invert(0.161);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-marquee-track { animation: none; }
 }
 
 /* ── Featured Works ────────────────────────────────────── */
@@ -1290,40 +1361,15 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   padding: 10% 60px 15%;
 }
 
-.clients-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 48px 60px;
-  align-items: center;
-  --logo-scale: 1.15; /* global logo size knob — raise/lower to scale ALL logos together */
+/* The client logos now render as the shared running marquee (markup in
+   about/index.html; all the visual rules live in the .logo-marquee /
+   .marquee-logo blocks near the top). Per-context tweaks: make the banner
+   wider here (75vw vs the home page's 50vw), and drop the marquee's
+   home-page top margin so the .clients section padding sets the rhythm. */
+.clients .logo-marquee {
+  width: 75vw; /* about page runs wider than the home page's 50vw */
+  margin: 0 auto;
 }
-
-.client-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(72px * var(--logo-scale, 1)); /* tracks the size knob */
-}
-
-.client-logo img {
-  width: calc(var(--logo-w, 150px) * var(--logo-scale, 1));
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  filter: grayscale(1);
-  opacity: 0.7;
-}
-
-/* Per-logo widths tuned for equal optical weight, not equal height:
-   single-line wordmarks are scaled down, multi-line lockups scaled up,
-   so each mark reads at a comparable cap-height. Height follows the
-   fixed aspect ratio automatically. */
-.client-logo:nth-child(1) img { --logo-w: 235px; } /* Oscar de la Renta — thin wide signature */
-.client-logo:nth-child(2) img { --logo-w: 185px; } /* Marc Jacobs Beauty — 2-line bold, restrained */
-.client-logo:nth-child(3) img { --logo-w: 175px; } /* Glowbar — single-line wordmark, scaled down */
-.client-logo:nth-child(4) img { --logo-w: 85px;  } /* Obagi Medical — 2-line lockup */
-.client-logo:nth-child(5) img { --logo-w: 112px; } /* Kylie Cosmetics — 3-line lockup, scaled up */
-.client-logo:nth-child(6) img { --logo-w: 116px; } /* Nautica — icon + wordmark */
 
 /* ── FAQ ────────────────────────────────────────────────── */
 .faq {
@@ -1534,6 +1580,12 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   }
   .tagline p { font-size: 5.5vw; }
 
+  /* Client logo marquee */
+  /* 50vw is too cramped on a phone — span the content width instead */
+  .logo-marquee { width: auto; margin-top: 72px; --marquee-scale: 0.5; }
+  .marquee-logo { padding: 0 7vw; }
+  .logo-marquee-track { animation-duration: 22s; }
+
   /* Works */
   .works { padding: 48px 24px 60px; }
   .section-label { font-size: 3vw; }
@@ -1685,11 +1737,7 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
   /* Clients */
   .clients { padding: 60px 24px; }
-  .clients-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 32px 24px;
-    --logo-scale: 0.56; /* keep the widest mark inside a 2-col cell, balance preserved */
-  }
+  .clients .logo-marquee { width: auto; } /* keep the about banner full-width on mobile — the 75vw is desktop-only */
 
   /* FAQ */
   .faq { padding: 60px 24px; }

@@ -144,13 +144,26 @@
 
   <!-- CLIENT LOGOS -->
   <section class="clients">
-    <div class="clients-grid">
-      <div class="client-logo"><img src="/images/about/odlr-logo.png" alt="Oscar de la Renta" /></div>
-      <div class="client-logo"><img src="/images/about/mjb-logo.png" alt="Marc Jacobs Beauty" /></div>
-      <div class="client-logo"><img src="/images/about/glowbar-logo.png" alt="Glowbar" /></div>
-      <div class="client-logo"><img src="/images/about/obagi-logo.png" alt="Obagi Medical" /></div>
-      <div class="client-logo"><img src="/images/about/kylie-logo.png" alt="Kylie Cosmetics" /></div>
-      <div class="client-logo"><img src="/images/about/nautica-logo.png" alt="Nautica" /></div>
+    <!-- CLIENT LOGO MARQUEE (CSS-only infinite scroll, right → left) — shares the home-page .logo-marquee styling -->
+    <div class="logo-marquee">
+      <div class="logo-marquee-viewport">
+        <div class="logo-marquee-track">
+          <!-- Set 1 (read by screen readers) -->
+          <div class="marquee-logo" style="--logo-w: 235px;"><img src="/images/about/odlr-logo.png" alt="Oscar de la Renta" /></div>
+          <div class="marquee-logo" style="--logo-w: 185px;"><img src="/images/about/mjb-logo.png" alt="Marc Jacobs Beauty" /></div>
+          <div class="marquee-logo" style="--logo-w: 175px;"><img src="/images/about/glowbar-logo.png" alt="Glowbar" /></div>
+          <div class="marquee-logo" style="--logo-w: 110px;"><img src="/images/about/obagi-logo.png" alt="Obagi Medical" /></div>
+          <div class="marquee-logo" style="--logo-w: 112px;"><img src="/images/about/kylie-logo.png" alt="Kylie Cosmetics" /></div>
+          <div class="marquee-logo" style="--logo-w: 116px;"><img src="/images/about/nautica-logo.png" alt="Nautica" /></div>
+          <!-- Set 2 (duplicate for the seamless loop — hidden from screen readers) -->
+          <div class="marquee-logo" style="--logo-w: 235px;" aria-hidden="true"><img src="/images/about/odlr-logo.png" alt="" /></div>
+          <div class="marquee-logo" style="--logo-w: 185px;" aria-hidden="true"><img src="/images/about/mjb-logo.png" alt="" /></div>
+          <div class="marquee-logo" style="--logo-w: 175px;" aria-hidden="true"><img src="/images/about/glowbar-logo.png" alt="" /></div>
+          <div class="marquee-logo" style="--logo-w: 110px;" aria-hidden="true"><img src="/images/about/obagi-logo.png" alt="" /></div>
+          <div class="marquee-logo" style="--logo-w: 112px;" aria-hidden="true"><img src="/images/about/kylie-logo.png" alt="" /></div>
+          <div class="marquee-logo" style="--logo-w: 116px;" aria-hidden="true"><img src="/images/about/nautica-logo.png" alt="" /></div>
+        </div>
+      </div>
     </div>
   </section>
 
