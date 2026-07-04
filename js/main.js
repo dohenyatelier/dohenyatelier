@@ -113,37 +113,42 @@ if (sessionStorage.getItem('splashSeen')) {
 
 
 /* ── Tagline: line mask reveal ──────────────────────────── */
-const taglineSplit = new SplitText('.tagline p', { type: 'lines', linesClass: 'line-wrap' });
-new SplitText('.tagline p', { type: 'lines' });
-
-gsap.set('.line-wrap', { overflow: 'hidden' });
-gsap.set(taglineSplit.lines, { willChange: 'transform' });
-
-gsap.from(taglineSplit.lines, {
-  scrollTrigger: {
-    trigger: '.tagline',
-    start: 'top 80%',
-  },
-  y: 80,
-  duration: 1.6,
-  stagger: 0.2,
-  ease: 'power4.out',
-  clearProps: 'willChange',
+/* autoSplit re-runs onSplit whenever the lines need to re-wrap (viewport
+   resize, font load), so the copy shrinks and reflows live instead of staying
+   frozen at its load-time break points until a reload. `mask: 'lines'` gives
+   each line its own overflow-hidden clip for the slide-up reveal. */
+SplitText.create('.tagline p', {
+  type: 'lines',
+  mask: 'lines',
+  linesClass: 'line-wrap',
+  autoSplit: true,
+  onSplit: (self) => gsap.from(self.lines, {
+    scrollTrigger: {
+      trigger: '.tagline',
+      start: 'top 80%',
+    },
+    y: 80,
+    duration: 1.6,
+    stagger: 0.2,
+    ease: 'power4.out',
+  }),
 });
 
 /* ── Services: headline + grid ──────────────────────────── */
-const servicesSplit = new SplitText('.services-headline', { type: 'lines' });
-
-gsap.from(servicesSplit.lines, {
-  scrollTrigger: {
-    trigger: '.services',
-    start: 'top 78%',
-  },
-  y: 24,
-  opacity: 0,
-  duration: 0.7,
-  stagger: 0.12,
-  ease: 'power3.out',
+SplitText.create('.services-headline', {
+  type: 'lines',
+  autoSplit: true,
+  onSplit: (self) => gsap.from(self.lines, {
+    scrollTrigger: {
+      trigger: '.services',
+      start: 'top 78%',
+    },
+    y: 24,
+    opacity: 0,
+    duration: 0.7,
+    stagger: 0.12,
+    ease: 'power3.out',
+  }),
 });
 
 gsap.from('.service-item', {

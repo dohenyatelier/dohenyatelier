@@ -32,7 +32,11 @@
   btn.addEventListener('click', function (e) {
     if (window.lenis && window.lenis.scrollTo) {
       e.preventDefault();
-      window.lenis.scrollTo(0);
+      // force: true runs the tween even when Lenis has auto-toggled itself off
+      // (common on mobile, where it doesn't drive touch scrolling) — otherwise
+      // the scroll stops a bit shy of the very top. lock: true keeps residual
+      // touch momentum from interrupting it before it lands at 0.
+      window.lenis.scrollTo(0, { force: true, lock: true });
     }
   });
 })();
