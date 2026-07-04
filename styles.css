@@ -1584,7 +1584,12 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .tagline {
     padding: 80px 28px;
   }
-  .tagline p { font-size: 5.5vw; }
+  /* Statement copy sits just above body size; balance prevents an orphan word
+     (e.g. "and remembering." breaking apart onto its own lines). */
+  .tagline p { font-size: 4.5vw; text-wrap: balance; }
+  /* Match the higher-specificity desktop rule (.tagline p.tagline-lead) so
+     the lead scales up on phones instead of staying stuck at the tiny 2.3vw. */
+  .tagline p.tagline-lead { font-size: 5.8vw; }
 
   /* Client logo marquee */
   /* 50vw is too cramped on a phone — span the content width instead */
@@ -1630,9 +1635,9 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
     gap: 6px;
     padding: 16px 0;
   }
-  .service-name { font-size: 2.8vw; white-space: normal; }
+  .service-name { font-size: 3.6vw; white-space: normal; }
   .service-desc {
-    font-size: 2.8vw;
+    font-size: 3.6vw;
     opacity: 0.65;
     transform: none;
   }
@@ -1655,7 +1660,7 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .footer-sub      { font-size: 6.5vw; }
   .footer-email    { font-size: 3.5vw; }
   .footer-social   { font-size: 4vw; }
-  .footer-copy     { font-size: 2.5vw; padding-top: 40px; }
+  .footer-copy     { font-size: 3vw; padding-top: 40px; }
   .footer-icon     { width: 160px; }
 
   /* Coming Soon — bump the centered text up from the tiny desktop 1.5vw */
