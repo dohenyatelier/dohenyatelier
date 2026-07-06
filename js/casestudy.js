@@ -1,5 +1,15 @@
 gsap.registerPlugin(ScrollTrigger);
 
+/* ── Back-button / bfcache restore ───────────────────────────────────────────
+   Case study pages ship with `is-loaded` hard-coded on <body> and do NOT load
+   transitions.js. When a work-card click removes `is-loaded` (fade out) and
+   navigates, a browser Back restores this page from bfcache with the class
+   still missing — leaving the body at opacity:0 (blank) forever. `pageshow`
+   fires on both first load and bfcache restore, so re-assert it here. This file
+   is shared by every case study page (and the generator template), so the fix
+   reaches all current and future pages automatically. ── */
+window.addEventListener('pageshow', () => document.body.classList.add('is-loaded'));
+
 /* ── Deliverables: images scroll normally (no pin). Left headers are sticky
    and STACK — each header pins below the nav and below the headers already
    pinned above it, so they accumulate while the images scroll past. Each row's
@@ -9,8 +19,26 @@ gsap.registerPlugin(ScrollTrigger);
 /* Mobile (≤768px) gets a static single-column stack via CSS — the sticky
    stacking + collapse-out logic below is disabled so it doesn't set inline
    heights that fight the mobile layout. */
-if (document.querySelector('.cs-deliverables') && window.innerWidth > 768) {
+if (document.querySelector('.cs-deliverables')) {
   const rows = gsap.utils.toArray('.cs-row');
+
+  // Desktop-only behaviour, evaluated LIVE (not just at load). Checking the
+  // breakpoint on every resync means a device that loads narrow (iPad portrait
+  // = 768) and is then rotated to landscape (>768) picks up the sticky-stacking
+  // instead of piling every header at the same top offset — and the reverse
+  // (wide → narrow without reload) tears the inline styles back down.
+  const isDesktop = () => window.innerWidth > 768;
+
+  // Drop any inline styles the desktop logic set, so on mobile the JS never
+  // fights the static single-column CSS layout.
+  const clearDesktopInline = () => {
+    rows.forEach((row) => {
+      const left = row.querySelector('.cs-row-left');
+      const body = row.querySelector('.cs-row-body');
+      if (left) left.style.top = '';
+      if (body) gsap.set(body, { clearProps: 'height,paddingTop' });
+    });
+  };
 
   // Give each sticky header an increasing top offset = nav height + the combined
   // (collapsed) height of every header pinned above it, so they stack instead of
@@ -90,10 +118,16 @@ if (document.querySelector('.cs-deliverables') && window.innerWidth > 768) {
   // scrolling AND when its RAF loop notices a programmatic/restored position, so
   // this also catches the browser restoring scroll on a mid-page reload (native
   // 'scroll' events don't fire here — Lenis suppresses them).
-  if (window.lenis) window.lenis.on('scroll', () => syncDescriptions(true));
+  if (window.lenis) window.lenis.on('scroll', () => { if (isDesktop()) syncDescriptions(true); });
 
   // Layout passes: recompute sticky offsets and snap descriptions instantly.
-  const resync = () => { stackHeaders(); syncDescriptions(false); };
+  // On mobile, tear down any desktop inline styles and stop — the CSS owns the
+  // static stack there.
+  const resync = () => {
+    if (!isDesktop()) { clearDesktopInline(); return; }
+    stackHeaders();
+    syncDescriptions(false);
+  };
   resync();
   document.fonts.ready.then(resync);
   window.addEventListener('load', resync);
@@ -237,7 +271,6 @@ window.addEventListener('resize', alignMeta);
   // flow parent is too short for CSS position:sticky to travel).
   const nav     = document.querySelector('.nav');
   const navLine = (nav ? nav.offsetHeight : 80) + 16;
-  document.documentElement.style.setProperty('--cs-stuck-top', navLine + 'px');
   let homeTop = null;
 
   function measureHome() {

@@ -824,12 +824,6 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   object-position: center center;
 }
 
-.more-projects{
-  background: var(--ecru);
-  height: 8vw;
-  margin-bottom: 10%;
-}
-
 /* ── Case Study: View-More expanding split ───────────────── */
 .cs-viewmore-btn {
   margin-top: 5px;
@@ -1106,19 +1100,6 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .work-row--asym {
   grid-template-columns: 60fr 38fr;
-}
-
-
-
-.work-row--single-left {
-  display: block;
-  max-width: 50%;
-}
-
-.work-row--single-right {
-  display: block;
-  max-width: 50%;
-  margin-left: auto;
 }
 
 .work-row--equal {

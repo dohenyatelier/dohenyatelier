@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const href = link.getAttribute('href');
     if (href && !href.startsWith('http') && !href.startsWith('mailto') && !href.startsWith('#')) {
       link.addEventListener('click', e => {
+        // Let the browser handle modifier-clicks (open in new tab/window) and
+        // non-primary buttons instead of hijacking them into a same-tab nav.
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
         e.preventDefault();
         document.body.classList.remove('is-loaded');
         setTimeout(() => { window.location.href = href; }, 400);
