@@ -391,3 +391,48 @@ window.addEventListener('resize', alignMeta);
     facade.replaceWith(iframe);   // sized by the existing .cs-youtube-video iframe rule
   });
 })();
+
+/* ── Deliverable-card image slideshow: any image slot can be replaced with a
+   `.cs-row-slideshow` wrapper containing multiple <img>s; they auto-advance
+   with a crossfade. Reusable across any card/page — just swap a plain <img>
+   for the wrapper markup in the page HTML, no per-page JS needed. Pauses on
+   hover so a visitor can rest on a single frame. ── */
+document.querySelectorAll('.cs-row-slideshow').forEach(function (el) {
+  const imgs = el.querySelectorAll('img');
+  if (imgs.length < 2) return;
+  let i = 0;
+  let timer = null;
+  const advance = function () {
+    imgs[i].classList.remove('is-active');
+    i = (i + 1) % imgs.length;
+    imgs[i].classList.add('is-active');
+  };
+  const start = function () {
+    if (timer) return;
+    timer = setInterval(advance, 1200);
+  };
+  const stop = function () {
+    clearInterval(timer);
+    timer = null;
+  };
+  start();
+  el.addEventListener('mouseenter', stop);
+  el.addEventListener('mouseleave', start);
+});
+
+/* ── Hero / campaign video: starts playing only once the visitor scrolls to
+   it, not on page load. Markup should NOT carry the `autoplay` attribute —
+   this observer calls .play() the first time the video crosses into view,
+   then stops watching. Applies to any .cs-hero-video, .cs-youtube-video, or
+   .cs-campaign-video local <video> on any case study page. ── */
+document.querySelectorAll('.cs-hero-video video, .cs-youtube-video video, .cs-campaign-video video').forEach(function (video) {
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        video.play();
+        io.unobserve(video);
+      }
+    });
+  }, { threshold: 0.5 });
+  io.observe(video);
+});
