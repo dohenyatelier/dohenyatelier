@@ -267,8 +267,13 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
    Doheny Atelier initials. Gap separates it from the statement below.
    Needs `p.tagline-lead` to outrank `.tagline p { margin: 0 }` above. */
 .tagline p.tagline-lead {
-  margin-bottom: 0.3em;
-  font-size:2.3vw;
+  margin-bottom: 2em;
+  font-size:0.85vw;
+  font-family: var(--font-caps);
+  letter-spacing: var(--ls-caps);
+  line-height: var(--lh-caps);
+  text-transform: uppercase;
+  font-style: normal;
 }
 
 /* ── Client logo marquee (CSS-only infinite scroll, right → left) ─ */
@@ -1125,20 +1130,26 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   font-size: 2vw;
   font-weight: normal;
   letter-spacing: var(--ls-body);
-  line-height: 1.15;
+  line-height: var(--lh-body);
   color: var(--graphite);
   max-width: 90%;
 }
 
-/* ── About Image Grid ───────────────────────────────────── */
+/* ── About Image Collage ────────────────────────────────── */
+/* Editorial collage: four tiles are absolutely positioned by % inside a
+   centered fixed-ratio stage, so the whole composition scales as one unit.
+   Arranged as a dense, overlapping 2×2 cluster (1↔2 top, 3↔4 bottom) with
+   z-index + soft shadow for depth. */
 .about-images {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  position: relative;
+  width: 92%;
+  margin: 20px auto 64px;
+  aspect-ratio: 5 / 5;
   background: var(--ecru);
 }
 
 .about-img-wrap {
-  aspect-ratio: 5 / 5;
+  position: absolute;
   overflow: hidden;
 }
 
@@ -1148,22 +1159,12 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   object-fit: cover;
 }
 
-/* ── About Body Copy ────────────────────────────────────── */
-.about-copy {
-  background: var(--ecru);
-  padding: 13% 120px;
-  display: flex;
-  justify-content: center;
-}
+/* Collage placement — dense, overlapping 2×2 cluster */
+.about-img-wrap:nth-child(1) { left: 7%;  top: 4%;  width: 50%; height: 40%; z-index: 1; } /* Kylie — top-left, wide */
+.about-img-wrap:nth-child(2) { left: 56%; top: 7%; width: 35%; height: 30%; z-index: 2; } /* Obagi — top-right, overlaps 1 */
+.about-img-wrap:nth-child(3) { left: 12%; top: 50%; width: 40%; height: 40%; z-index: 2; } /* Nautica — bottom-left, tall */
+.about-img-wrap:nth-child(4) { left: 50%; top: 40%; width: 34%; height: 34%; z-index: 3; } /* Kylie 2 — mid-right, overlaps 3 */
 
-.about-copy p {
-  font-family: var(--font-body);
-  font-size: 2.2vw;
-  letter-spacing: var(--ls-body);
-  line-height: var(--lh-body);
-  color: var(--graphite);
-  max-width: 95%;
-}
 
 /* ── Founder ─────────────────────────────────────────────── */
 .founder {
@@ -1183,7 +1184,7 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .founder-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 0.7fr 1fr;
   gap: 60px;
   align-items: stretch;
 }
@@ -1193,13 +1194,15 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   flex-direction: column;
   gap: 24px;
   text-align: right;
+  width:87%;
+  justify-self: end;  
 }
 
 .founder-text p {
   font-family: var(--font-body);
   font-size: 1.5vw;
   letter-spacing: var(--ls-body);
-  line-height: 1.65;
+  line-height: var(--lh-body);
   color: var(--graphite);
 }
 
@@ -1324,7 +1327,7 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   font-family: var(--font-body);
   font-size: 1.5vw;
   letter-spacing: var(--ls-body);
-  line-height: 1.7;
+  line-height: var(--lh-body);
   color: var(--graphite);
   max-width: 640px;
   opacity: 0;
@@ -1655,9 +1658,26 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
     max-width: 100%;
   }
 
-  /* About Images — compact 3-column portrait strip */
-  .about-images { grid-template-columns: repeat(3, 1fr); }
-  .about-img-wrap { aspect-ratio: 3/4; }
+  /* About Images — collage collapses to a staggered 2-column grid.
+     Selectors carry the section class so they outrank the desktop
+     `.about-img-wrap:nth-child()` placement rules. */
+  .about-images {
+    position: static;
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 24px;
+  }
+  .about-images .about-img-wrap {
+    position: static;
+    left: auto;
+    top: auto;
+    width: auto;
+    height: auto;
+    aspect-ratio: 3/4;
+  }
+  .about-images .about-img-wrap:nth-child(even) { margin-top: 36px; } /* offset for collage feel */
 
   /* About Copy */
   .about-copy { padding: 60px 24px; }
@@ -1677,6 +1697,8 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
     text-align: left;
     padding-left: 0;
     order: 2;
+    width: 100%;
+    justify-self: start;
   }
   .founder-photo { order: 1; }
   .founder-text p.founder-label {
