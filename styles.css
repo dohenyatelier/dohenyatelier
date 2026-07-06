@@ -790,6 +790,55 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   display: block;
 }
 
+.cs-youtube-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Vertical (9/16) local campaign video — same page slot as .cs-youtube-video
+   but sized for portrait footage instead of forcing it into a 16/10 crop. */
+.cs-campaign-video {
+  width: 28%;
+  max-width: 420px;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  background: var(--ecru);
+  margin: 20px auto 5vw;
+}
+
+.cs-campaign-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Per-page modifier: a wider campaign video (used on the Obagi page). Kept as a
+   scoped class rather than inline styles so it can stay responsive — inline
+   styles apply at every viewport and can't hold a media query. Desktop width
+   here; mobile width lives in the ≤768px block below. */
+.cs-campaign-video--wide {
+  width: 35%;
+  max-width: none;
+  margin-top: 10px;
+}
+
+/* Two campaign videos side by side. Centres the pair and neutralises the base
+   auto margins so the flex gap controls spacing instead. */
+.cs-campaign-video-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 3%;
+  margin: 20px auto 5vw;
+}
+
+.cs-campaign-video-row .cs-campaign-video {
+  margin: 0;
+}
+
 /* Click-to-load poster (facade) — a normal element so Lenis scrolls over it. */
 .cs-youtube-facade {
   position: relative;
@@ -1118,6 +1167,38 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+}
+
+/* Drop-in replacement for one .cs-row-right img: wraps several images that
+   auto-advance with a crossfade (see /js/casestudy.js). Matches the sibling
+   image's sizing so it slots into the same stacked layout. */
+.cs-row-slideshow {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.cs-row-slideshow img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1);
+  transition: transform 0.4s ease;
+}
+
+.cs-row-slideshow img.is-active {
+  opacity: 1;
+}
+
+/* Hovering pauses the auto-advance (see /js/casestudy.js) — zoom the visible
+   frame slightly so the pause reads as an intentional response to the hover,
+   not a stall. */
+.cs-row-slideshow:hover img.is-active {
+  transform: scale(1.05);
 }
 
 /* ── Work Page ───────────────────────────────────────────── */
@@ -1911,6 +1992,10 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .cs-2colimgrow { width: 100%; flex-direction: column; gap: 12px; }
 
   .cs-youtube-video { width: 100%; aspect-ratio: 16 / 10; margin: 40px auto; }
+  .cs-campaign-video { width: 60%; margin: 20px auto; }
+  .cs-campaign-video--wide { width: 72%; }
+  /* Two-up row: each video shares the width so the pair fits side by side. */
+  .cs-campaign-video-row .cs-campaign-video--wide { width: 46%; }
 
   /* Deliverables: single column, header stacked above the images (no sticky
      stacking / collapse — that JS is disabled on mobile) */
