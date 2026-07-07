@@ -416,8 +416,14 @@ document.querySelectorAll('.cs-row-slideshow').forEach(function (el) {
     timer = null;
   };
   start();
-  el.addEventListener('mouseenter', stop);
-  el.addEventListener('mouseleave', start);
+  // Hover-to-pause is a pointer affordance only. On touch devices a tap fires
+  // a synthetic mouseenter (sticky hover), which would pause the slideshow and,
+  // with the CSS zoom, re-trigger on every slide change — so skip it entirely
+  // where there's no real hover.
+  if (window.matchMedia('(hover: hover)').matches) {
+    el.addEventListener('mouseenter', stop);
+    el.addEventListener('mouseleave', start);
+  }
 });
 
 /* ── Hero / campaign video: starts playing only once the visitor scrolls to
