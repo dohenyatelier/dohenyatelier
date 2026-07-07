@@ -50,13 +50,21 @@
      synthetic mouseenter, which would leave the pill stuck on screen. */
   const label = document.getElementById('cursorLabel');
   if (!label || !window.matchMedia('(hover: hover)').matches) return;
+  const labelText = label.querySelector('.cursor-label-inner') || label;
   document.querySelectorAll('.work-img-wrap').forEach((el) => {
+    // Pill copy follows the card's destination: coming-soon cards read
+    // "Coming soon", live case studies read "View case study".
+    const comingSoon = el.closest('.work-item')?.dataset.href === '/comingsoon/';
     const move = (e) => {
       label.style.setProperty('--cx', e.clientX + 'px');
       label.style.setProperty('--cy', e.clientY + 'px');
     };
     el.addEventListener('mousemove', move);
-    el.addEventListener('mouseenter', (e) => { move(e); label.classList.add('visible'); });
+    el.addEventListener('mouseenter', (e) => {
+      labelText.textContent = comingSoon ? 'Coming soon' : 'View case study';
+      move(e);
+      label.classList.add('visible');
+    });
     el.addEventListener('mouseleave', () => label.classList.remove('visible'));
   });
 })();
