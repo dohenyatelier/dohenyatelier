@@ -10,10 +10,10 @@
   <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
 
   <!-- SEO -->
-  <!-- NOTE: Nav + "view more/all work" now link here (/work/), but this page is still
-       placeholder content (lorem-ipsum "Project 1–7"), so it stays noindexed. When real
-       project copy replaces the placeholders below: remove the robots noindex, add /work/
-       + its case studies to sitemap.xml. -->
+  <!-- NOTE: kept noindexed while two of the five cards below still link to
+       /comingsoon/ (Kylie Holiday, Land of the Free). When every card links to a
+       live case study: remove this robots noindex and add /work/ + the case-study
+       URLs to /sitemap.xml. -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="A selection of Doheny Atelier projects across branding, packaging, and experiential design." />
   <link rel="canonical" href="https://dohenyatelier.com/work/" />
@@ -42,7 +42,7 @@
     <a href="/" class="nav-logo">
       <img src="/images/DA_Logo.png" alt="Doheny Atelier" class="nav-logo-img" />
     </a>
-    <a href="/comingsoon/" class="nav-link">Expertise</a>
+    <a href="/about/#expertise" class="nav-link">Expertise</a>
     <a href="/comingsoon/" class="nav-link">Contact</a>
     <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
       <span></span>
@@ -59,7 +59,7 @@
     <nav class="mobile-nav">
       <a href="/work/">Work</a>
       <a href="/about/">About</a>
-      <a href="/comingsoon/">Expertise</a>
+      <a href="/about/#expertise">Expertise</a>
       <a href="/comingsoon/">Contact</a>
     </nav>
   </div>
@@ -76,14 +76,14 @@
         <div class="work-img-wrap work-img-wrap--tall">
           <img src="/images/glowbar-1.png" alt="Glowbar" />
         </div>
-        <p class="work-title"><em>Glowbar’s First-ever Retail Product Launch</em></p>
+        <h2 class="work-title"><em>Glowbar’s First-ever Retail Product Launch</em></h2>
         <p class="work-desc">Designed Glowbar's first-ever retail product; the Expert Cleanser, as well as newly launched Simple Solution.</p>
       </div>
       <div class="work-item" data-href="/work/casestudy/kyliecosmetics-rebrand/">
         <div class="work-img-wrap work-img-wrap--short">
           <img src="/images/kylie-1.png" alt="Kylie Cosmetics Rebrand" />
         </div>
-        <p class="work-title"><em>Kylie Cosmetics — Rebrand</em></p>
+        <h2 class="work-title"><em>Kylie Cosmetics — Rebrand</em></h2>
         <p class="work-desc">Worked alongside Kylie Jenner to design her full packaging rebrand on both primary and secondary components.</p>
       </div>
     </div>
@@ -94,21 +94,21 @@
         <div class="work-img-wrap work-img-wrap--wide">
           <img src="/images/obagi-1.png" alt="Obagi Medical" />
         </div>
-        <p class="work-title"><em>Obagi Medical — Identity & Packaging</em></p>
+        <h2 class="work-title"><em>Obagi Medical — Identity & Packaging</em></h2>
         <p class="work-desc">Led the rebranding effort for Obagi Medical, including brand strategy, visual identity, and packaging design.</p>
       </div>
       <div class="work-item" data-href="/comingsoon/">
         <div class="work-img-wrap work-img-wrap--wide">
           <img src="/images/about/kylie-about-2.gif" alt="Kylie Cosmetics Holiday Collection" />
         </div>
-        <p class="work-title"><em>Kylie Cosmetics — Holiday Collection</em></p>
+        <h2 class="work-title"><em>Kylie Cosmetics — Holiday Collection</em></h2>
         <p class="work-desc">Designed Kylie Cosmetics' holiday advent calendar and limited-edition Reindeer Collection packaging</p>
       </div>
       <div class="work-item" data-href="/comingsoon/">
         <div class="work-img-wrap work-img-wrap--wide">
           <img src="/images/work-page/land-of-the-free.jpeg" alt="Land of the Free Fragrance Packaging" />
         </div>
-        <p class="work-title"><em>Land of the Free — Fragrance Packaging</em></p>
+        <h2 class="work-title"><em>Land of the Free — Fragrance Packaging</em></h2>
         <p class="work-desc">Designed Land of the Free's fragrance packaging.</p>
       </div>
     </div>
@@ -149,26 +149,7 @@
   <script>window.lenis = new Lenis({ autoRaf: true, autoToggle: true, anchors: true, allowNestedScroll: true, naiveDimensions: true, stopInertiaOnNavigate: true })</script>
   <script src="/js/mobile.js"></script>
   <script src="/js/transitions.js"></script>
-  <script>
-    document.querySelectorAll('.work-item').forEach(item => {
-      item.style.cursor = 'pointer';
-      item.addEventListener('click', () => {
-        const href = item.dataset.href || '/comingsoon/';
-        document.body.classList.remove('is-loaded');
-        setTimeout(() => { window.location.href = href; }, 400);
-      });
-    });
-
-    const label = document.getElementById('cursorLabel');
-    document.querySelectorAll('.work-img-wrap').forEach((el) => {
-      el.addEventListener('mousemove', (e) => {
-        label.style.setProperty('--cx', e.clientX + 'px');
-        label.style.setProperty('--cy', e.clientY + 'px');
-      });
-      el.addEventListener('mouseenter', () => label.classList.add('visible'));
-      el.addEventListener('mouseleave', () => label.classList.remove('visible'));
-    });
-  </script>
+  <script src="/js/workcards.js"></script>
   <script src="/js/scrollbar.js"></script>
   <script src="/js/backtotop.js"></script>
   <script src="/js/skeleton.js"></script>

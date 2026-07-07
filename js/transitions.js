@@ -15,6 +15,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // Let the browser handle modifier-clicks (open in new tab/window) and
         // non-primary buttons instead of hijacking them into a same-tab nav.
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+
+        // Same-page hash link (e.g. "Expertise" → /about/#expertise while
+        // already on /about/): scroll to the section via Lenis instead of
+        // fading out and reloading the whole page.
+        const url = new URL(link.href, window.location.href);
+        if (url.pathname === window.location.pathname && url.hash) {
+          const target = document.querySelector(url.hash);
+          if (target) {
+            e.preventDefault();
+            if (window.lenis && window.lenis.scrollTo) window.lenis.scrollTo(target);
+            else target.scrollIntoView();
+            return;
+          }
+        }
+
         e.preventDefault();
         document.body.classList.remove('is-loaded');
         setTimeout(() => { window.location.href = href; }, 400);

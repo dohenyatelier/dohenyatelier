@@ -23,7 +23,7 @@
   <meta name="twitter:description" content="Obagi Medical partnered with Doheny Atelier to modernize its clinically backed, professional-grade skincare portfolio through a cohesive brand refresh and unified packaging design." />
   <meta name="twitter:image" content="https://dohenyatelier.com/images/project-pages/obagi/obagi-display.jpg" />
 </head>
-<body class="is-loaded">
+<body>
 
   <!-- Scroll-to-top target (top of page) -->
   <span id="cs-top" aria-hidden="true"></span>
@@ -35,7 +35,7 @@
     <a href="/" class="nav-logo">
       <img src="/images/DA_Logo.png" alt="Doheny Atelier" class="nav-logo-img" />
     </a>
-    <a href="/comingsoon/" class="nav-link">Expertise</a>
+    <a href="/about/#expertise" class="nav-link">Expertise</a>
     <a href="/comingsoon/" class="nav-link">Contact</a>
     <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
       <span></span>
@@ -52,7 +52,7 @@
     <nav class="mobile-nav">
       <a href="/work/">Work</a>
       <a href="/about/">About</a>
-      <a href="/comingsoon/">Expertise</a>
+      <a href="/about/#expertise">Expertise</a>
       <a href="/comingsoon/">Contact</a>
     </nav>
   </div>
@@ -105,7 +105,6 @@
         <p>Obagi Medical is the global leader in professional-grade skincare, formed in 1988 by dermatologist Dr. Zein Obagi. Skincare experts certify the brand's efficacious and results-driven approach, with formulas backed by clinical testing. Since its founding, Obagi Medical has expanded into a wide portfolio of products across dedicated treatment spaces including Nu-Gen™, Professional-C®, and Clenziderm M.D®.</p>
         <p>Kate, the founder of Doheny Atelier, led the refresh of the entire Obagi brand landscape. The transformation began with the logo, as Kate established a new, cohesive identity that consolidated several legacy Obagi logos into a single, powerful vision. This revitalized visual identity provided a compelling foundation for the packaging, establishing a strategic design hierarchy to modernize and unify the extensive portfolio of over 40 products for today's consumer.</p>
         <div class="cs-contributors">
-          <h3 class="cs-contributors-title">Contributors</h3>
           <ul class="cs-contributors-list">
             <li><span class="cs-contributors-role">Waldencast CEO</span><span class="cs-contributors-name"><span class="cs-name">Hind Sebti</span></span></li>
             <li><span class="cs-contributors-role">Lead Marketers</span><span class="cs-contributors-name"><span class="cs-name">Nicole Hart</span>, <span class="cs-name">Abner Shao</span></span></li>
@@ -137,7 +136,7 @@
 
       <!-- 3. AUTOPLAY VIDEO (muted loop, plays once scrolled into view — see /js/casestudy.js) -->
       <div class="cs-hero cs-hero-video">
-        <video muted loop playsinline>
+        <video muted loop playsinline preload="metadata">
           <source src="/images/project-pages/obagi/obagi-brand.mp4" type="video/mp4">
         </video>
       </div>
@@ -215,12 +214,12 @@
   <!-- CAMPAIGN VIDEO — local file, vertical (9/16) footage, plays once scrolled into view (see /js/casestudy.js) -->
   <div class="cs-campaign-video-row">
     <div class="cs-campaign-video cs-campaign-video--wide">
-      <video muted loop playsinline>
+      <video muted loop playsinline preload="metadata">
         <source src="/images/project-pages/obagi/obagi-cream-vid.mp4" type="video/mp4">
       </video>
     </div>
     <div class="cs-campaign-video cs-campaign-video--wide">
-      <video muted loop playsinline>
+      <video muted loop playsinline preload="metadata">
         <source src="/images/project-pages/obagi/obagi-serum-vid.mp4" type="video/mp4">
       </video>
     </div>
@@ -231,26 +230,26 @@
        linked at the bottom (ideally not this same project). -->
   <section class="more-work">
     <div class="more-work-head">
-      <h6 class="section-label">More Work</h6>
+      <h2 class="section-label">More Work</h2>
       <a href="/work/" class="view-more">View all work →</a>
     </div>
     <div class="works-grid">
 
       <div class="work-item is-active" data-href="/work/casestudy/glowbar/">
         <div class="work-img-wrap">
-          <img src="/images/glowbar-1.png" alt="" loading="lazy" />
+          <img src="/images/glowbar-1.png" alt="Glowbar brand project by Doheny Atelier" loading="lazy" />
         </div>
       </div>
 
       <div class="work-item" data-href="/work/casestudy/kyliecosmetics-rebrand/">
         <div class="work-img-wrap">
-          <img src="/images/kylie-1.png" alt="" loading="lazy" />
+          <img src="/images/kylie-1.png" alt="Kylie Cosmetics brand project by Doheny Atelier" loading="lazy" />
         </div>
       </div>
 
       <div class="work-item" data-href="/work/casestudy/obagi/">
         <div class="work-img-wrap">
-          <img src="/images/obagi-1.png" alt="" loading="lazy" />
+          <img src="/images/obagi-1.png" alt="Obagi Medical brand project by Doheny Atelier" loading="lazy" />
         </div>
       </div>
 
@@ -295,9 +294,11 @@
   <script src="https://unpkg.com/lenis@1.3.23/dist/lenis.min.js"></script>
   <script>window.lenis = new Lenis({ autoRaf: true, autoToggle: true, anchors: true, allowNestedScroll: true, naiveDimensions: true, stopInertiaOnNavigate: true })</script>
   <script src="/js/mobile.js"></script>
+  <script src="/js/transitions.js"></script>
   <script src="/js/gsap.min.js"></script>
   <script src="/js/ScrollTrigger.min.js"></script>
   <script src="/js/casestudy.js"></script>
+  <script src="/js/workcards.js"></script>
   <script src="/js/scrollbar.js"></script>
   <script src="/js/backtotop.js"></script>
   <script src="/js/skeleton.js"></script>

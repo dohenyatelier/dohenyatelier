@@ -17,31 +17,9 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
   document.addEventListener('splashDismissed', startSlideshow, { once: true });
 })();
 
-/* ── Work item links ────────────────────────────────────── */
-document.querySelectorAll('.work-item').forEach(item => {
-  item.style.cursor = 'pointer';
-  item.addEventListener('click', () => {
-    document.body.classList.remove('is-loaded');
-    setTimeout(() => { window.location.href = item.dataset.href || '/comingsoon/'; }, 400);
-  });
-});
-
-/* ── Custom cursor ──────────────────────────────────────── */
-const label = document.getElementById('cursorLabel');
-
-document.querySelectorAll('.work-img-wrap').forEach((el) => {
-  const updateLabelPosition = (e) => {
-    label.style.setProperty('--cx', e.clientX + 'px');
-    label.style.setProperty('--cy', e.clientY + 'px');
-  };
-  el.addEventListener('mousemove', updateLabelPosition);
-  el.addEventListener('mouseenter', (e) => {
-    updateLabelPosition(e);
-    label.classList.add('visible');
-  });
-  el.addEventListener('mouseleave', () => label.classList.remove('visible'));
-});
-
+/* NB: work-card click-through + the "View case study" cursor pill used to
+   live here — they're shared with /work/ and the case studies now, so the
+   single copy is /js/workcards.js. */
 
 /* ── Splash screen ──────────────────────────────────────── */
 const splash = document.getElementById('splash');
@@ -73,8 +51,12 @@ if (sessionStorage.getItem('splashSeen')) {
     delay: 1.8,
   });
 
-  // Click to dismiss — logo floats up to nav
-  splash.addEventListener('click', () => {
+  // Click (or any key — keyboard users can't click "anywhere") dismisses:
+  // the logo floats up to its nav position. Guarded so it only runs once.
+  let dismissed = false;
+  const dismissSplash = () => {
+    if (dismissed) return;
+    dismissed = true;
     const splashLogo = document.querySelector('.splash-logo');
     const navLogo    = document.querySelector('.nav-logo-img');
 
@@ -108,7 +90,9 @@ if (sessionStorage.getItem('splashSeen')) {
         document.dispatchEvent(new Event('splashDismissed'));
       },
     });
-  });
+  };
+  splash.addEventListener('click', dismissSplash);
+  window.addEventListener('keydown', dismissSplash);
 }
 
 

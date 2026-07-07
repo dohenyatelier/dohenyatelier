@@ -1,13 +1,10 @@
 gsap.registerPlugin(ScrollTrigger);
 
-/* ── Back-button / bfcache restore ───────────────────────────────────────────
-   Case study pages ship with `is-loaded` hard-coded on <body> and do NOT load
-   transitions.js. When a work-card click removes `is-loaded` (fade out) and
-   navigates, a browser Back restores this page from bfcache with the class
-   still missing — leaving the body at opacity:0 (blank) forever. `pageshow`
-   fires on both first load and bfcache restore, so re-assert it here. This file
-   is shared by every case study page (and the generator template), so the fix
-   reaches all current and future pages automatically. ── */
+/* ── Back-button / bfcache safety net ────────────────────────────────────────
+   Case study pages load transitions.js (which owns the page fade-in/out), but
+   keep this one-line re-assert as insurance: if a future page loads this file
+   without transitions.js, a Back-button bfcache restore would otherwise bring
+   the page back with `is-loaded` missing — body stuck at opacity:0 (blank). ── */
 window.addEventListener('pageshow', () => document.body.classList.add('is-loaded'));
 
 /* ── Deliverables: images scroll normally (no pin). Left headers are sticky
@@ -168,47 +165,9 @@ if (document.querySelector('.cs-deliverables')) {
   });
 }
 
-/* ── Work cards (e.g. the More Work grid): click-through + "View case study"
-   cursor pill. Mirrors the homepage behaviour for case-study pages, which load
-   this file instead of main.js. No-ops on pages without work cards. */
-(function () {
-  const items = document.querySelectorAll('.work-item');
-  if (!items.length) return;
-
-  items.forEach((item) => {
-    item.style.cursor = 'pointer';
-    item.addEventListener('click', () => {
-      document.body.classList.remove('is-loaded');   // fade out, then navigate
-      setTimeout(() => { window.location.href = item.dataset.href || '/comingsoon/'; }, 400);
-    });
-  });
-
-  /* More Work: expanding-panel hover gallery. Hovering a collapsed panel makes
-     it the large one; siblings collapse. The active state PERSISTS after the
-     cursor leaves (we only act on enter, never on leave) so the layout shows
-     which project was last hovered. Desktop only — on touch there's no hover and
-     the CSS keeps the panels stacked. */
-  const panels = document.querySelectorAll('.more-work .work-item');
-  if (panels.length && window.matchMedia('(min-width: 769px)').matches) {
-    panels.forEach((panel) => {
-      panel.addEventListener('mouseenter', () => {
-        panels.forEach((p) => p.classList.toggle('is-active', p === panel));
-      });
-    });
-  }
-
-  const label = document.getElementById('cursorLabel');
-  if (!label) return;
-  document.querySelectorAll('.work-img-wrap').forEach((el) => {
-    const move = (e) => {
-      label.style.setProperty('--cx', e.clientX + 'px');
-      label.style.setProperty('--cy', e.clientY + 'px');
-    };
-    el.addEventListener('mousemove', move);
-    el.addEventListener('mouseenter', (e) => { move(e); label.classList.add('visible'); });
-    el.addEventListener('mouseleave', () => label.classList.remove('visible'));
-  });
-})();
+/* NB: the More Work grid's click-through, expanding panels, and cursor pill
+   used to live here — they're shared with home and /work/ now, so the single
+   copy is /js/workcards.js (loaded by every page with work cards). */
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
