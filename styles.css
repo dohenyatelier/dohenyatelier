@@ -148,9 +148,6 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html {
   scroll-behavior: smooth;
-  /* Stops iOS Safari's rubber-band overscroll bounce at the document edges,
-     which was revealing a gap of whatever's behind <body> below the footer. */
-  overscroll-behavior-y: none;
 }
 body {
   background-color: var(--ecru);
