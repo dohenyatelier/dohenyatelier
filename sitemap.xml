@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Live pages only. Add /work/ and /work/casestudy/... URLs here when the Work section goes live. -->
+  <!-- Live, indexable pages only.
+       Excluded on purpose: /work/ (noindex until every card links to a live case
+       study) and /comingsoon/ (thin placeholder, noindexed). Add /work/ here and
+       drop the case-study URLs down once the Work index goes fully live. -->
   <url>
     <loc>https://dohenyatelier.com/</loc>
     <priority>1.0</priority>
@@ -10,11 +13,27 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dohenyatelier.com/comingsoon/</loc>
-    <priority>0.5</priority>
+    <loc>https://dohenyatelier.com/expertise/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dohenyatelier.com/contact/</loc>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://dohenyatelier.com/katedohenyqa/</loc>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dohenyatelier.com/work/casestudy/kyliecosmetics-rebrand/</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dohenyatelier.com/work/casestudy/obagi/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dohenyatelier.com/work/casestudy/glowbar/</loc>
+    <priority>0.8</priority>
   </url>
 </urlset>
