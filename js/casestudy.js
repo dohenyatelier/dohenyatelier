@@ -378,8 +378,10 @@ document.querySelectorAll('.cs-row-slideshow').forEach(function (el) {
   // Hover-to-pause is a pointer affordance only. On touch devices a tap fires
   // a synthetic mouseenter (sticky hover), which would pause the slideshow and,
   // with the CSS zoom, re-trigger on every slide change — so skip it entirely
-  // where there's no real hover.
-  if (window.matchMedia('(hover: hover)').matches) {
+  // where there's no real hover. Also skip it for full-width slideshows that
+  // fill the viewport (e.g. the mechanical frame): the cursor is essentially
+  // always over them, so hover-pause would keep them permanently frozen.
+  if (window.matchMedia('(hover: hover)').matches && !el.classList.contains('cs-mechanical')) {
     el.addEventListener('mouseenter', stop);
     el.addEventListener('mouseleave', start);
   }
