@@ -1861,6 +1861,23 @@ body::-webkit-scrollbar {
   padding: 10% clamp(36px, 4.8vw, 60px) 15%;
 }
 
+/* "Our Clients" eyebrow above the marquee — expertise page only (about page
+   has no label here, so this is scoped to .clients-label, not .clients). */
+.clients-label {
+  display: block;
+  text-align: center;
+  margin-bottom: clamp(24px, 3.2vw, 40px);
+}
+
+/* Expertise page only — the about page's .clients keeps its full 10% top
+   padding (it follows a different, taller section); here it directly
+   follows the mission/strategy cards, which already carry their own
+   bottom padding, so the combined gap read as too tall. */
+.clients--tight {
+  padding-top: clamp(32px, 4vw, 56px);
+  padding-bottom: clamp(56px, 7vw, 96px);
+}
+
 /* The client logos now render as the shared running marquee (markup in
    about/index.html; all the visual rules live in the .logo-marquee /
    .marquee-logo blocks near the top). Per-context tweaks: make the banner
@@ -2143,6 +2160,171 @@ body::-webkit-scrollbar {
   .qa-body-text {
     padding-top: 0;
   }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   8.5 EXPERTISE — /expertise/
+   "What we do" intro: large Caslon page title on the left, two stacked cards
+   on the right — each a caps eyebrow (mission / strategy) beside a body para.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Heading (full-bleed so the title never wraps mid-phrase) ── */
+.wwd-hero {
+  background: var(--ecru);
+  padding: clamp(150px, 18vw, 240px) clamp(36px, 4.8vw, 72px) clamp(56px, 7vw, 112px);
+}
+
+.wwd-title {
+  font-family: var(--font-heading);
+  font-weight: normal;
+  font-size: clamp(34px, 4.5vw, 72px);   /* match the /work/ "Work" heading */
+  letter-spacing: var(--ls-heading);
+  line-height: var(--lh-heading);
+  text-transform: lowercase;
+  color: var(--graphite);
+}
+
+/* ── What We Do cards (kept in the right column, under the heading) ── */
+.wwd {
+  background: var(--ecru);
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  column-gap: clamp(32px, 4vw, 72px);
+  align-items: start;
+  padding: 0 clamp(36px, 4.8vw, 72px) clamp(48px, 6vw, 100px);
+}
+
+.wwd-cards {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 6vw, 88px);
+}
+
+.wwd-card {
+  display: grid;
+  grid-template-columns: 0.45fr 1fr;
+  column-gap: clamp(6px, 0.8vw, 14px);
+  align-items: start;
+}
+
+.wwd-label {
+  font-family: var(--font-caps);
+  font-size: clamp(12px, 0.85vw, 14px);
+  letter-spacing: var(--ls-caps);
+  /* Match the body line-height so the eyebrow's first line tops-aligns with
+     the paragraph's first line (the caps default lh of 1.9 would drop it). */
+  line-height: var(--lh-body);
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+
+.wwd-body {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.15vw, 19px);
+  letter-spacing: var(--ls-body);
+  line-height: var(--lh-body);
+  color: var(--graphite);
+  max-width: 48ch;
+}
+
+/* ── Contact page ── lead paragraph under the "let's connect" H1, then the
+      "Reach out at…" line set close beneath it. Lives on the ecru hero. ── */
+.contact-lead {
+  font-family: var(--font-body);
+  font-size: clamp(17px, 1.5vw, 26px);
+  letter-spacing: var(--ls-body);
+  line-height: var(--lh-body);
+  color: var(--graphite);
+  width: 80vw;
+  max-width: 80vw;
+  margin-top: clamp(24px, 2.6vw, 44px);
+}
+
+.contact-cta-line {
+  font-family: var(--font-body);
+  font-size: clamp(17px, 1.5vw, 26px);
+  letter-spacing: var(--ls-body);
+  line-height: var(--lh-body);
+  color: var(--graphite);
+  margin-top: clamp(8px, 0.8vw, 14px);
+}
+
+.contact-cta-email {
+  color: var(--graphite);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  transition: opacity 0.25s ease;
+}
+.contact-cta-email:hover { opacity: 0.6; }
+
+/* ── Industries / Services (section heading, then two equal columns; per
+      column: caps title on its own row, list flush to the column's right
+      edge at 60% width) ── */
+.ind-serv {
+  background: var(--beige);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: clamp(32px, 4vw, 72px);
+  row-gap: clamp(40px, 5vw, 72px);
+  padding: clamp(28px, 3.5vw, 56px) clamp(36px, 4.8vw, 72px) clamp(96px, 12vw, 200px);
+}
+
+.ind-serv-heading {
+  grid-column: 1 / -1;
+  font-family: var(--font-heading);
+  font-weight: normal;
+  font-size: clamp(28px, 3.6vw, 58px);   /* slightly smaller than .wwd-title */
+  letter-spacing: var(--ls-heading);
+  line-height: var(--lh-heading);
+  text-transform: lowercase;
+  color: var(--graphite);
+}
+
+.ind-serv-col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.4vw, 22px);
+}
+
+/* Services column only: three independent title+list groups (Strategy /
+   Design / Content) stacked inside one .ind-serv-col. Same gap value as
+   .ind-serv-col so title-to-list and group-to-group spacing stay equal. */
+.ind-serv-group {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.4vw, 22px);
+}
+
+.ind-serv-title {
+  font-family: var(--font-caps);
+  font-weight: normal;
+  font-size: clamp(12px, 0.85vw, 14px);
+  letter-spacing: var(--ls-caps);
+  /* match the list's line-height so the title tops-align with the first item */
+  line-height: var(--lh-body);
+  text-transform: uppercase;
+  color: var(--graphite);
+  flex: none;
+}
+
+.ind-serv-list {
+  width: 65%;          /* 65% of the column... */
+  margin-left: auto;   /* ...pushed flush to the column's right edge */
+  list-style: none;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 0.7vw, 12px);
+}
+
+.ind-serv-list li {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.15vw, 19px);
+  letter-spacing: var(--ls-body);
+  line-height: var(--lh-body);
+  color: var(--graphite);
 }
 
 
@@ -2480,6 +2662,7 @@ body::-webkit-scrollbar {
 
   /* Clients */
   .clients { padding: 60px 24px; }
+  .clients--tight { padding-top: 32px; padding-bottom: 56px; }
   .clients .logo-marquee { width: auto; } /* keep the about banner full-width on mobile — the 75vw is desktop-only */
 
   /* FAQ */
@@ -2618,6 +2801,46 @@ body::-webkit-scrollbar {
   .cs-row-products-title { font-size: 3vw; }
   .cs-row-products-list li { font-size: 3.8vw; }
   .cs-row-right { gap: 12px; }
+
+  /* Expertise — What We Do (full-width heading, then cards; cards stack label/body) */
+  .wwd-hero { padding: 150px 24px 40px; }
+  /* .wwd-title keeps its desktop clamp on mobile to match the /work/ heading */
+  .wwd {
+    grid-template-columns: 1fr;
+    padding: 0 24px 72px;
+  }
+  .wwd-cards { grid-column: auto; gap: 40px; }
+  .wwd-card {
+    grid-template-columns: 1fr;
+    row-gap: 12px;
+  }
+  .wwd-label { font-size: 3vw; }
+  .wwd-body  { font-size: 4vw; max-width: 100%; }
+
+  /* Contact — lead + CTA stack full-width */
+  .contact-lead { font-size: 4.4vw; width: 100%; max-width: 100%; margin-top: 24px; }
+  .contact-cta-line { font-size: 4.4vw; margin-top: 12px; }
+
+  /* Industries / Services — stack the two columns; title over a full-width list.
+     Extra top padding here (not on the shared .clients bottom padding) since
+     .clients also backs the about page's FAQ section with different spacing needs. */
+  .ind-serv {
+    grid-template-columns: 1fr;
+    row-gap: 44px;
+    padding: 28px 24px 72px;
+  }
+  .ind-serv-heading { font-size: 7vw; }   /* was 9vw — nearly matched the H1 (wwd-title is ~9vw-equivalent at this width) */
+  .ind-serv-col {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ind-serv-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ind-serv-title { font-size: 3vw; }
+  .ind-serv-list  { width: 100%; margin-left: 0; }
+  .ind-serv-list li { font-size: 4vw; }
 
   /* Disable all hover effects on touch */
   .nav-link:hover::after          { transform: scaleX(0); }
