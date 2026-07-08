@@ -66,11 +66,11 @@
 
   --ls-heading:     0em;
   --ls-body:        -0.035em;
-  --ls-caps:        0.15em;
+  --ls-caps:        0.2em;
 
   --lh-heading:     1;
-  --lh-body:        1;
-  --lh-caps:        1;
+  --lh-body:        1.45;
+  --lh-caps:        1.9;
 }
 
 
@@ -264,6 +264,7 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .footer-email {
   font-family: var(--font-body);
   font-size: clamp(13px, 1.2vw, 19px);
+  line-height: var(--lh-body);
   color: var(--ecru);
   text-decoration: none;
   position: relative;
@@ -648,6 +649,7 @@ body::-webkit-scrollbar {
   font-size: clamp(15px, 1.25vw, 20px);
   font-style: italic;
   font-weight: normal;
+  line-height: var(--lh-body);
   margin-top: clamp(16px, 2vw, 30px);
   margin-bottom: clamp(4px, 0.4vw, 6px);
   color: var(--graphite);
@@ -656,7 +658,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(12px, 0.85vw, 15px);
   letter-spacing: var(--ls-body);
-  line-height: 1.2em;
+  line-height: var(--lh-body);
   color: var(--graphite);
   opacity: 0.75;
   max-width: 80%;
@@ -821,7 +823,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(32px, 4vw, 64px);
   letter-spacing: var(--ls-body);
-  line-height: 1.1;
+  line-height: var(--lh-body);
   color: var(--graphite);
   max-width: 90%;
   margin-bottom: clamp(30px, 4.0vw, 50px);
@@ -899,13 +901,12 @@ body::-webkit-scrollbar {
 }
 
 #work-heading.work-page-heading {
-  font-family: var(--font-body);
+  font-family: var(--font-heading);
   font-size: clamp(34px, 4.5vw, 72px);
   font-weight: normal;
-  letter-spacing: var(--ls-body);
-  line-height: var(--lh-body);
+  letter-spacing: var(--ls-heading);
   color: var(--graphite);
-  margin-bottom: clamp(-32px, -2.2vw, -18px);
+
 }
 
 .work-page-subtext {
@@ -915,8 +916,9 @@ body::-webkit-scrollbar {
   line-height: var(--lh-body);
   color: var(--graphite);
   opacity: 0.7;
-  margin-top: clamp(-40px, -2.8vw, -22px);
-  margin-bottom: clamp(-16px, -1.1vw, -9px);
+  margin-top: clamp(-8px, 0.4vw, 8px);
+  margin-bottom: clamp(-64px, -5vw, -40px);
+
 }
 
 .work-row {
@@ -961,7 +963,7 @@ body::-webkit-scrollbar {
   font-size: clamp(32px, 4.5vw, 72px);
   font-weight: normal;
   letter-spacing: var(--ls-body);
-  line-height: 1.15;
+  line-height: var(--lh-body);
   color: var(--graphite);
   margin-bottom: clamp(24px, 3.2vw, 40px);
 }
@@ -982,7 +984,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(12px, 1vw, 16px);
   letter-spacing: var(--ls-body);
-  line-height: 1.6;
+  line-height: var(--lh-body);
   color: var(--graphite);
   opacity: 0.75;
 }
@@ -1024,7 +1026,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(12px, 0.9vw, 14px);
   letter-spacing: var(--ls-body);
-  line-height: 1.6;
+  line-height: var(--lh-body);
   color: var(--graphite);
 }
 
@@ -1271,7 +1273,7 @@ body::-webkit-scrollbar {
   font-size: clamp(22px, 2vw, 32px);
   font-weight: normal;
   letter-spacing: var(--ls-body);
-  line-height: 1.2;
+  line-height: var(--lh-body);
   color: var(--graphite);
   margin: 0;
 }
@@ -1280,7 +1282,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(12px, 1vw, 16px);
   letter-spacing: var(--ls-body);
-  line-height: 1.6;
+  line-height: var(--lh-body);
   color: var(--graphite);
   opacity: 0.75;
   margin: 0;
@@ -1307,7 +1309,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(12px, 1vw, 16px);
   letter-spacing: var(--ls-body);
-  line-height: 1.6;
+  line-height: var(--lh-body);
   color: var(--graphite);
   opacity: 0.75;
   /* role on top, name(s) beneath */
@@ -1409,7 +1411,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(12px, 0.85vw, 14px);
   letter-spacing: var(--ls-body);
-  line-height: 1.6;
+  line-height: var(--lh-body);
   color: var(--graphite);
   opacity: 0.65;
 }
@@ -1441,7 +1443,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(12px, 0.85vw, 14px);
   letter-spacing: var(--ls-body);
-  line-height: 1.5;
+  line-height: var(--lh-body);
   color: var(--graphite);
 }
 
@@ -1555,7 +1557,7 @@ body::-webkit-scrollbar {
   font-size: clamp(22px, 2vw, 32px);
   font-weight: normal;
   letter-spacing: var(--ls-body);
-  line-height: var(--lh-body);
+  line-height: 1.35;
   color: var(--graphite);
   max-width: 90%;
   /* Side padding pulls the text column in from the section edges so the
@@ -1645,6 +1647,7 @@ body::-webkit-scrollbar {
 .founder-link {
   font-family: var(--font-body);
   font-size: clamp(13px, 1.2vw, 19px);
+  line-height: var(--lh-body);
   color: var(--graphite);
   position: relative;
   padding-bottom: 1px;
@@ -1882,6 +1885,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(16px, 1.5vw, 24px);
   letter-spacing: var(--ls-body);
+  line-height: var(--lh-body);
   color: var(--graphite);
   user-select: none;
 }
@@ -1891,7 +1895,7 @@ body::-webkit-scrollbar {
 .faq-toggle {
   font-family: var(--font-body);
   font-size: clamp(14px, 1.3vw, 21px);
-  line-height: 1;
+  line-height: var(--lh-body);
   flex-shrink: 0;
   width: 16px;
 }
@@ -1900,7 +1904,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(13px, 1.2vw, 19px);
   letter-spacing: var(--ls-body);
-  line-height: 1.75;
+  line-height: var(--lh-body);
   color: var(--graphite);
   padding: 0 0 clamp(17px, 2.24vw, 28px) clamp(22px, 2.88vw, 36px);
   max-width: 80%;
@@ -1967,7 +1971,7 @@ body::-webkit-scrollbar {
   font-style: italic;
   font-size: clamp(20px, 1.8vw, 30px);
   letter-spacing: var(--ls-body);
-  line-height: 1;
+  line-height: var(--lh-body);
   color: var(--graphite);
   margin-bottom: clamp(14px, 1.92vw, 24px);
 }
@@ -1977,7 +1981,7 @@ body::-webkit-scrollbar {
   font-weight: normal;
   font-size: clamp(38px, 3.2vw, 56px);
   letter-spacing: var(--ls-body);
-  line-height: 1.1;
+  line-height: var(--lh-body);
   color: var(--graphite);
   margin: 0 0 clamp(17px, 2.24vw, 28px);
 }
@@ -1990,7 +1994,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(14px, 1.1vw, 18px);
   letter-spacing: var(--ls-body);
-  line-height: 1.4;
+  line-height: var(--lh-body);
   color: var(--graphite);
   margin-bottom: clamp(54px, 7.2vw, 90px);
 }
@@ -2019,7 +2023,7 @@ body::-webkit-scrollbar {
   font-family: var(--font-body);
   font-size: clamp(15px, 1.15vw, 19px);
   letter-spacing: var(--ls-body);
-  line-height: 1.6;
+  line-height: var(--lh-body);
   color: var(--graphite);
   margin: 0 0 clamp(12px, 1.6vw, 20px);
 }
@@ -2039,7 +2043,7 @@ body::-webkit-scrollbar {
   font-style: italic;
   font-size: clamp(26px, 2.8vw, 46px);
   letter-spacing: var(--ls-body);
-  line-height: 1.25;
+  line-height: var(--lh-body);
   color: var(--graphite);
   max-width: 60%;
   margin: 0 auto;
@@ -2136,6 +2140,7 @@ body::-webkit-scrollbar {
   font-style: italic;
   font-size: clamp(16px, 1.5vw, 24px);
   letter-spacing: var(--ls-body);
+  line-height: var(--lh-body);
   color: var(--graphite);
   opacity: 0.5;
 }
@@ -2352,7 +2357,7 @@ body::-webkit-scrollbar {
   .about-hero { padding: 150px 24px 60px; }
   .about-hero-heading {
     font-size: 4.8vw;
-    line-height: 1.2;
+    line-height: var(--lh-body);
     max-width: 100%;
     padding: 0;   /* full content width on phones; the section's 24px inset is enough */
   }
@@ -2405,7 +2410,7 @@ body::-webkit-scrollbar {
     font-size: 3.5vw;
     margin-bottom: 24px;
   }
-  .founder-text p { font-size: 4vw; line-height: 1.2; }
+  .founder-text p { font-size: 4vw; line-height: var(--lh-body); }
   .founder-link {
     font-size: 4vw;
     align-self: flex-start;
@@ -2457,13 +2462,13 @@ body::-webkit-scrollbar {
   .faq { padding: 60px 24px; }
   .faq-heading  { font-size: 3.5vw; margin-bottom: 32px; }
   .faq-question { font-size: 4.2vw; }
-  .faq-answer   { font-size: 3.8vw; line-height: 1.2; max-width: 100%; padding-left: 28px; }
+  .faq-answer   { font-size: 3.8vw; line-height: var(--lh-body); max-width: 100%; padding-left: 28px; }
   .faq-toggle   { font-size: 4.2vw; }
 
   /* ── Case Study (Kylie) ─────────────────────────────────── */
   /* Header */
   .cs-header { padding: 110px 24px 40px; }
-  .cs-title { font-size: 7.5vw; line-height: 1.2; margin-bottom: 28px; }
+  .cs-title { font-size: 7.5vw; line-height: var(--lh-body); margin-bottom: 28px; }
   .cs-header-body {
     min-height: 0;
     display: flex;
@@ -2474,7 +2479,7 @@ body::-webkit-scrollbar {
      flex children of the header body — lets us order the button after the
      Services meta instead of right under the description. */
   .cs-desc { display: contents; }
-  .cs-desc p { order: 1; width: 100%; font-size: 4vw; line-height: 1.5; }
+  .cs-desc p { order: 1; width: 100%; font-size: 4vw; line-height: var(--lh-body); }
 
   /* Meta drops out of its absolute, nav-aligned columns into normal flow */
   .cs-meta {
@@ -2538,10 +2543,10 @@ body::-webkit-scrollbar {
     opacity: 1;
   }
   .cs-expand-title { font-size: 6vw; }
-  .cs-expand-panel-inner p { font-size: 4vw; line-height: 1.5; }
+  .cs-expand-panel-inner p { font-size: 4vw; line-height: var(--lh-body); }
   .cs-contributors { margin-top: 10vw; }
   .cs-contributors-list { column-gap: 4vw; row-gap: 4vw; }
-  .cs-contributors-list li { font-size: 4vw; line-height: 1.5; }
+  .cs-contributors-list li { font-size: 4vw; line-height: var(--lh-body); }
 
   /* Hero stack */
   .cs-hero { width: 100%; aspect-ratio: 4 / 3; }
