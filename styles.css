@@ -96,6 +96,20 @@ body {
   transition: opacity 0.4s ease;
 }
 
+/* Selection highlight inverts: the highlight takes the text colour and the
+   text takes the background colour. `currentColor` can't be used here — inside
+   ::selection it resolves to the pseudo's own `color`, not the element's — so
+   the two themes are set explicitly. Default = dark text on light ground; the
+   footer (dark ground, light text) flips it. */
+::selection {
+  background-color: var(--graphite);
+  color: var(--ecru);
+}
+.footer ::selection {
+  background-color: var(--ecru);
+  color: var(--graphite);
+}
+
 body.is-loaded {
   opacity: 1;
 }
@@ -2818,8 +2832,10 @@ body::-webkit-scrollbar {
   .wwd-body  { font-size: 4vw; max-width: 100%; }
 
   /* Contact — lead + CTA stack full-width */
-  .contact-lead { font-size: 4.4vw; width: 100%; max-width: 100%; margin-top: 24px; }
-  .contact-cta-line { font-size: 4.4vw; margin-top: 12px; }
+  /* Cap the vw scale so the body copy stays well below the ~34px H1 at the
+     768px top edge of this breakpoint (raw 4.4vw would hit ~34px there). */
+  .contact-lead { font-size: clamp(16px, 4.4vw, 21px); width: 100%; max-width: 100%; margin-top: 24px; }
+  .contact-cta-line { font-size: clamp(16px, 4.4vw, 21px); margin-top: 12px; }
 
   /* Industries / Services — stack the two columns; title over a full-width list.
      Extra top padding here (not on the shared .clients bottom padding) since
