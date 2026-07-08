@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Obagi Medical Rebrand — Doheny Atelier</title>
   <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <!-- Apply saved colour theme before first paint to avoid a flash -->
+  <script>(function(){try{if(localStorage.getItem('da-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+  <script defer src="/js/theme.js"></script>
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="https://use.typekit.net/gfl8gha.css" />
   <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
@@ -134,7 +137,12 @@
         </div>
       </div>
 
-      <!-- 3. AUTOPLAY VIDEO (muted loop, plays once scrolled into view — see /js/casestudy.js) -->
+      <!-- 3. MECHANICAL GIF (shown at natural height — not cropped) -->
+      <div class="cs-mechanical">
+        <img src="/images/project-pages/obagi/obagi-mechanical.gif" alt="Obagi Medical packaging mechanical" />
+      </div>
+
+      <!-- 4. AUTOPLAY VIDEO (muted loop, plays once scrolled into view — see /js/casestudy.js) -->
       <div class="cs-hero cs-hero-video">
         <video muted loop playsinline preload="metadata">
           <source src="/images/project-pages/obagi/obagi-brand.mp4" type="video/mp4">

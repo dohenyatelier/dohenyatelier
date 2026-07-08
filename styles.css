@@ -60,6 +60,19 @@
   --beige:    #CCC6BA;
   --graphite: #292929;
 
+  /* RGB channel-lists mirroring the hex tokens above, for use in rgba() so that
+     translucent colours (glass nav, hairline borders, shadows) invert with the
+     theme instead of staying hardcoded. Keep these in sync with the hex vars. */
+  --white-rgb:    255, 255, 255;
+  --ecru-rgb:     245, 243, 239;
+  --beige-rgb:    204, 198, 186;
+  --graphite-rgb: 41, 41, 41;
+
+  /* Logo recolour amounts for the brightness(0) invert() trick used on every
+     transparent-PNG logo. In light mode logos read graphite; the dark-mode
+     block below lifts them to ecru. */
+  --logo-ink: 0.161;   /* invert() amount → graphite */
+
   --font-heading:   'aviano-didone', serif;
   --font-body:      'Caslon540LTStd', serif;
   --font-caps:      'EngraversGothicBT', sans-serif;
@@ -71,6 +84,50 @@
   --lh-heading:     1;
   --lh-body:        1.45;
   --lh-caps:        1.9;
+}
+
+/* ── Dark mode ─────────────────────────────────────────────
+   A manual, button-driven theme (js/theme.js sets data-theme on <html> and
+   persists it to localStorage; an inline snippet in each page's <head> applies
+   it before first paint to avoid a flash). Because nearly all colours route
+   through the tokens above, dark mode is a token remap into an elevation scale
+   anchored on graphite:
+     • ecru  → graphite  (#292929)  — the default page surface
+     • beige → graphite  (#292929)  — collapses onto the same base surface
+     • white → one step DARKER than graphite — recessed surfaces (Featured Works)
+     • graphite (the ink) → light ecru so text/marks flip to light
+   Photographs are never touched; only UI colours and the transparent-PNG
+   logos invert. */
+html[data-theme="dark"] {
+  --white:    #1B1917;   /* recessed: darker than graphite */
+  --ecru:     #292929;   /* default surface: graphite */
+  --beige:    #292929;   /* collapses onto the graphite base surface */
+  --graphite: #F5F3EF;   /* ink flips to light */
+
+  --white-rgb:    27, 25, 23;
+  --ecru-rgb:     41, 41, 41;
+  --beige-rgb:    41, 41, 41;
+  --graphite-rgb: 245, 243, 239;
+
+  --logo-ink: 0.955;   /* invert() amount → ecru */
+}
+
+/* Smooth cross-fade when the theme flips. Scoped to colour properties so we
+   don't animate layout, and disabled for reduced-motion users. (body handles
+   its own transition — see the body rule — because it already animates opacity
+   for the page fade-in and `transition` is not additive.) */
+.nav, .mobile-menu, .works, .footer, .cursor-label-inner,
+.cs-viewmore-btn, .service-item, .faq-item, .expertise-rule,
+.nav-logo-img, .marquee-logo img, .footer-icon, .footer-social-link img {
+  transition: background-color 0.5s ease, color 0.5s ease,
+              border-color 0.5s ease, filter 0.5s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav, .mobile-menu, .works, .footer, .cursor-label-inner,
+  .cs-viewmore-btn, .service-item, .faq-item, .expertise-rule,
+  .nav-logo-img, .marquee-logo img, .footer-icon, .footer-social-link img {
+    transition: none;
+  }
 }
 
 
@@ -93,7 +150,8 @@ body {
   line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.4s ease,
+              background-color 0.5s ease, color 0.5s ease;
 }
 
 /* Selection highlight inverts: the highlight takes the text colour and the
@@ -167,7 +225,7 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   align-items: center;
   justify-items: center;
   padding: clamp(12px, 1.6vw, 20px) clamp(24px, 3.2vw, 40px);
-  background: rgba(245, 243, 239, 0.7);
+  background: rgba(var(--ecru-rgb), 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   position: fixed;
@@ -442,6 +500,43 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   100% { --cs-totop-fill: 100%; }
 }
 
+/* ── Theme toggle (sticky, every page) ─────────────────────
+   Injected into every page by js/theme.js. Fixed bottom-left so it clears the
+   bottom-right back-to-top control. Glass pill in brand colours that itself
+   inverts with the theme; shows a sun in dark mode (tap → go light) and a moon
+   in light mode (tap → go dark). */
+.theme-toggle {
+  position: fixed;
+  left: 2rem;
+  bottom: 2rem;
+  z-index: 901;
+  width: 3.25rem;
+  height: 3.25rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--graphite-rgb), 0.28);
+  background: rgba(var(--ecru-rgb), 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--graphite);
+  cursor: pointer;
+  transition: background-color 0.5s ease, color 0.5s ease,
+              border-color 0.5s ease, transform 0.3s ease;
+}
+.theme-toggle:hover { transform: scale(1.06); }
+.theme-toggle svg {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke-width: 1.4px;
+}
+/* Show the moon in light mode, the sun in dark mode. */
+.theme-toggle .theme-toggle-sun  { display: none; }
+html[data-theme="dark"] .theme-toggle .theme-toggle-moon { display: none; }
+html[data-theme="dark"] .theme-toggle .theme-toggle-sun  { display: block; }
+
 /* No scroll-driven-animation support (e.g. Safari): the ring stays a static
    beige donut (0% fill) — the scroll-to-top link still works everywhere. */
 
@@ -493,8 +588,8 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   /* Hairline graphite ring keeps the beige thumb visible on beige sections;
      second layer is a slight drop shadow with reduced blur. */
   box-shadow:
-    0 0 0 1px rgba(41, 41, 41, 0.28),
-    0 1px 2.5px rgba(41, 41, 41, 0.22);
+    0 0 0 1px rgba(var(--graphite-rgb), 0.28),
+    0 1px 2.5px rgba(var(--graphite-rgb), 0.22);
   cursor: grab;
 }
 .da-scrollbar-thumb:active { cursor: grabbing; }
@@ -608,14 +703,29 @@ body::-webkit-scrollbar {
   width: calc(var(--logo-w, 150px) * var(--marquee-scale, 0.8));
   height: auto;
   object-fit: contain;
-  /* recolor every (transparent-PNG) logo to brand graphite: brightness(0) makes
-     the opaque pixels black, invert(0.161) lifts black → rgb(41,41,41) = #292929 */
-  filter: brightness(0) invert(0.161);
+  /* recolor every (transparent-PNG) logo: brightness(0) makes the opaque pixels
+     black, then invert(--logo-ink) lifts black → graphite in light mode, ecru in
+     dark mode (see the dark-theme block for the lifted invert amount) */
+  filter: brightness(0) invert(var(--logo-ink));
   opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .logo-marquee-track { animation: none; }
+}
+
+/* ── Dark-mode logo recolouring ────────────────────────────
+   These transparent-PNG marks are shown as-is in light mode (a dark logo on a
+   light ground, or a light logo on the dark footer). In dark mode the grounds
+   invert, so force each mark to the correct ink with the brightness(0)+invert
+   trick: nav logo → ecru (light) on the now-dark nav; footer icon + social
+   icons → graphite (dark) on the now-light footer. Photos are never targeted. */
+html[data-theme="dark"] .nav-logo-img {
+  filter: brightness(0) invert(0.955);   /* → ecru */
+}
+html[data-theme="dark"] .footer-icon,
+html[data-theme="dark"] .footer-social-link img {
+  filter: brightness(0) invert(0.161);   /* → graphite */
 }
 
 /* ── Featured Works ────────────────────────────────────── */
@@ -878,13 +988,13 @@ body::-webkit-scrollbar {
   align-items: baseline;
   gap: clamp(14px, 1.92vw, 24px);
   padding: clamp(12px, 1.6vw, 20px) 0;
-  border-bottom: 1px solid rgba(41, 41, 41, 0.25);
+  border-bottom: 1px solid rgba(var(--graphite-rgb), 0.25);
   opacity: 0.85;
   transition: border-color 0.4s ease;
 }
 
 .service-item:hover {
-  border-color: rgba(41, 41, 41, 0.7);
+  border-color: rgba(var(--graphite-rgb), 0.7);
 }
 
 .service-name {
@@ -1104,6 +1214,24 @@ body::-webkit-scrollbar {
   aspect-ratio: 16 / 10;
 }
 
+/* Mechanical GIF: mirrors the first hero image row (16/7, full width) for
+   consistency — object-fit:cover crops and centers to match the other rows. */
+.cs-mechanical {
+  width: 98%;
+  margin: 0 auto;
+  background: var(--ecru);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.cs-mechanical img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
 /* Autoplay video: zoomed in ~5% and centred both axes within its frame. */
 .cs-hero-video video {
   transform: scale(1.05);
@@ -1224,7 +1352,7 @@ body::-webkit-scrollbar {
   align-items: center;
   gap: 12px;
   padding: 5px 11px;
-  background: rgba(204, 198, 186, 0.6);   /* beige, a little transparent */
+  background: rgba(var(--beige-rgb), 0.6);   /* beige, a little transparent */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: none;
@@ -1239,7 +1367,7 @@ body::-webkit-scrollbar {
   transition: background 0.3s ease;
 }
 .cs-viewmore-btn:hover {
-  background: rgba(204, 198, 186, 0.85);  /* slightly more opaque on hover */
+  background: rgba(var(--beige-rgb), 0.85);  /* slightly more opaque on hover */
 }
 
 .cs-viewmore-icon {
@@ -1447,7 +1575,7 @@ body::-webkit-scrollbar {
 
 .cs-row-desc {
   font-family: var(--font-body);
-  font-size: clamp(12px, 0.85vw, 14px);
+  font-size: clamp(14px, 1.05vw, 17px);
   letter-spacing: var(--ls-body);
   line-height: var(--lh-body);
   color: var(--graphite);
@@ -1804,7 +1932,7 @@ body::-webkit-scrollbar {
 .expertise-rule {
   flex: 1;
   border: none;
-  border-top: 1px solid rgba(41, 41, 41, 0.25);
+  border-top: 1px solid rgba(var(--graphite-rgb), 0.25);
 }
 
 .expertise-desc {
@@ -1923,11 +2051,11 @@ body::-webkit-scrollbar {
 }
 
 .faq-item {
-  border-top: 1px solid rgba(41, 41, 41, 0.25);
+  border-top: 1px solid rgba(var(--graphite-rgb), 0.25);
 }
 
 .faq-item:last-child {
-  border-bottom: 1px solid rgba(41, 41, 41, 0.25);
+  border-bottom: 1px solid rgba(var(--graphite-rgb), 0.25);
 }
 
 .faq-question {
@@ -2277,7 +2405,7 @@ body::-webkit-scrollbar {
       column: caps title on its own row, list flush to the column's right
       edge at 60% width) ── */
 .ind-serv {
-  background: var(--beige);
+  background: var(--ecru);
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: clamp(32px, 4vw, 72px);
@@ -2300,6 +2428,11 @@ body::-webkit-scrollbar {
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 1.4vw, 22px);
+}
+
+/* Nudge the Industries column (first col) very slightly right of the grid edge */
+.ind-serv-col:first-of-type {
+  padding-left: clamp(6px, 0.8vw, 12px);
 }
 
 /* Services column only: three independent title+list groups (Strategy /
@@ -2811,7 +2944,7 @@ body::-webkit-scrollbar {
   .cs-row-hdr:hover { opacity: 1; }
   .cs-row-num,
   .cs-row-label { font-size: 3.2vw; }
-  .cs-row-desc { font-size: 3.8vw; }
+  .cs-row-desc { font-size: 4.2vw; }
   .cs-row-products-title { font-size: 3vw; }
   .cs-row-products-list li { font-size: 3.8vw; }
   .cs-row-right { gap: 12px; }
@@ -2865,5 +2998,5 @@ body::-webkit-scrollbar {
   .work-item:hover .work-title::after { transform: scaleX(0); }
   .work-item:hover .work-img-wrap img { transform: none; }
   .work-img-wrap:hover            { cursor: auto; }
-  .service-item:hover             { border-color: rgba(41, 41, 41, 0.25); }
+  .service-item:hover             { border-color: rgba(var(--graphite-rgb), 0.25); }
 }
