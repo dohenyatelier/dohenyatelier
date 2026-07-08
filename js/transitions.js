@@ -8,6 +8,17 @@ window.addEventListener('pageshow', () => {
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('is-loaded');
 
+  // Underline whichever nav item matches the current page. Links with a
+  // hash (e.g. "Expertise" → /about/#expertise) point at a section of a
+  // page rather than a distinct destination, so they're excluded — only
+  // "About" should light up on /about/, not both.
+  document.querySelectorAll('.nav-link').forEach(link => {
+    const url = new URL(link.href, window.location.href);
+    if (!url.hash && url.pathname === window.location.pathname) {
+      link.classList.add('is-active');
+    }
+  });
+
   document.querySelectorAll('a[href]').forEach(link => {
     const href = link.getAttribute('href');
     if (href && !href.startsWith('http') && !href.startsWith('mailto') && !href.startsWith('#')) {
