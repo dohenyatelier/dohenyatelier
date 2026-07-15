@@ -32,8 +32,9 @@ if (sessionStorage.getItem('splashSeen')) {
   // Lock scroll while splash is visible
   document.body.style.overflow = 'hidden';
 
-  // Logo fades in on load
-  gsap.fromTo('.splash-logo',
+  // Logo fades in on load. Targets the wrapper, not the img: the img's own
+  // filter is reserved for the dark-mode recolour (see styles.css).
+  gsap.fromTo('.splash-logo-wrap',
     { opacity: 0, filter: 'blur(20px)' },
     {
       opacity: 1,
@@ -57,7 +58,7 @@ if (sessionStorage.getItem('splashSeen')) {
   const dismissSplash = () => {
     if (dismissed) return;
     dismissed = true;
-    const splashLogo = document.querySelector('.splash-logo');
+    const splashLogo = document.querySelector('.splash-logo-wrap');
     const navLogo    = document.querySelector('.nav-logo-img');
 
     const splashRect = splashLogo.getBoundingClientRect();

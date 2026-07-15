@@ -718,9 +718,11 @@ body::-webkit-scrollbar {
    These transparent-PNG marks are shown as-is in light mode (a dark logo on a
    light ground, or a light logo on the dark footer). In dark mode the grounds
    invert, so force each mark to the correct ink with the brightness(0)+invert
-   trick: nav logo → ecru (light) on the now-dark nav; footer icon + social
-   icons → graphite (dark) on the now-light footer. Photos are never targeted. */
-html[data-theme="dark"] .nav-logo-img {
+   trick: nav logo + splash logo → ecru (light) on the now-dark nav/splash;
+   footer icon + social icons → graphite (dark) on the now-light footer. Photos
+   are never targeted. */
+html[data-theme="dark"] .nav-logo-img,
+html[data-theme="dark"] .splash-logo {
   filter: brightness(0) invert(0.955);   /* → ecru */
 }
 html[data-theme="dark"] .footer-icon,
@@ -872,11 +874,19 @@ html[data-theme="dark"] .footer-social-link img {
   cursor: pointer;
 }
 
+/* The wrapper carries the entry fade/blur and the fly-to-nav transform, so the
+   img itself is free to hold the dark-mode recolour filter below — GSAP writes
+   an inline `filter` and would otherwise clobber it. */
+.splash-logo-wrap {
+  display: inline-block;
+  opacity: 0;
+}
+
 .splash-logo {
   width: 280px;
   height: auto;
   object-fit: contain;
-  opacity: 0;
+  display: block;
 }
 
 .splash-hint {
@@ -2990,10 +3000,15 @@ html[data-theme="dark"] .footer-social-link img {
     padding: 28px 24px 72px;
   }
   .ind-serv-heading { font-size: 7vw; }   /* was 9vw — nearly matched the H1 (wwd-title is ~9vw-equivalent at this width) */
+  /* Single-column stack: Industries / Design / Strategy / Content read as equal
+     sections. 44px between sections (matches the grid row-gap between the two
+     cols) so every section — including the groups inside the 2nd col — is
+     evenly separated; title→list inside a section stays tight at 12px. */
   .ind-serv-col {
     flex-direction: column;
-    gap: 12px;
+    gap: 44px;
   }
+  .ind-serv-col:first-of-type { padding-left: 0; }   /* left-align Industries with the others */
   .ind-serv-group {
     flex-direction: column;
     gap: 12px;
