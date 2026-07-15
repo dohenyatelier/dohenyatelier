@@ -6,7 +6,7 @@
   <title>Expertise — Doheny Atelier</title>
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <!-- Apply saved colour theme before first paint to avoid a flash -->
-  <script>(function(){try{if(localStorage.getItem('da-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+  <script>(function(){try{if(localStorage.getItem('da-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(sessionStorage.getItem('da-menu-wipe')){sessionStorage.removeItem('da-menu-wipe');document.documentElement.classList.add('menu-wipe-in');}}catch(e){}})();</script>
   <script defer src="/js/theme.js"></script>
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="https://use.typekit.net/gfl8gha.css" />
@@ -117,15 +117,17 @@
   <section class="ind-serv">
     <h2 class="ind-serv-heading">expertise</h2>
     <div class="ind-serv-col">
-      <h3 class="ind-serv-title">Industries</h3>
-      <ul class="ind-serv-list">
-        <li>Makeup</li>
-        <li>Skincare</li>
-        <li>Hair Care</li>
-        <li>Fragrance</li>
-        <li>Health &amp; Wellness</li>
-        <li>Jewelry &amp; Accessories</li>
-      </ul>
+      <div class="ind-serv-group">
+        <h3 class="ind-serv-title">Industries</h3>
+        <ul class="ind-serv-list">
+          <li>Makeup</li>
+          <li>Skincare</li>
+          <li>Hair Care</li>
+          <li>Fragrance</li>
+          <li>Health &amp; Wellness</li>
+          <li>Jewelry &amp; Accessories</li>
+        </ul>
+      </div>
     </div>
     <div class="ind-serv-col">
       <div class="ind-serv-group">

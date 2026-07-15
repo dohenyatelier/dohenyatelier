@@ -171,6 +171,15 @@ body {
 body.is-loaded {
   opacity: 1;
 }
+
+/* Arrived from a mobile-menu tap: the menu panel is still covering the
+   viewport and about to wipe up (see .mobile-menu in the mobile block), so
+   this page has to be fully painted behind it — the entry fade would
+   otherwise be caught mid-way as the panel lifts. */
+html.menu-wipe-in body {
+  opacity: 1;
+  transition: none;
+}
 a { color: inherit; text-decoration: none; }
 img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
@@ -2583,6 +2592,21 @@ html[data-theme="dark"] .footer-social-link img {
   }
   .mobile-menu.open {
     transform: translateY(0);
+  }
+  /* Wipe-in on arrival. The inline head snippet sets .menu-wipe-in before
+     first paint whenever this page was opened from the menu, so the panel is
+     already covering and wipes up to reveal THIS page — the panel never lifts
+     on the page you tapped from. Deliberately an animation, not the .open
+     transition: it needs to run off the page load with no JS to start it, so
+     the reveal still happens if mobile.js fails. mobile.js drops the class on
+     animationend — it has to, because a filled animation outranks
+     .mobile-menu.open's transform and would leave the panel stuck off-screen. */
+  html.menu-wipe-in .mobile-menu {
+    animation: menu-wipe-up 0.45s cubic-bezier(0.76, 0, 0.24, 1) both;
+  }
+  @keyframes menu-wipe-up {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-100%); }
   }
   .mobile-menu-close {
     position: absolute;

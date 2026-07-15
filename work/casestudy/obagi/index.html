@@ -6,7 +6,7 @@
   <title>Obagi Medical Rebrand — Doheny Atelier</title>
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <!-- Apply saved colour theme before first paint to avoid a flash -->
-  <script>(function(){try{if(localStorage.getItem('da-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+  <script>(function(){try{if(localStorage.getItem('da-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(sessionStorage.getItem('da-menu-wipe')){sessionStorage.removeItem('da-menu-wipe');document.documentElement.classList.add('menu-wipe-in');}}catch(e){}})();</script>
   <script defer src="/js/theme.js"></script>
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="https://use.typekit.net/gfl8gha.css" />
@@ -137,9 +137,16 @@
         </div>
       </div>
 
-      <!-- 3. MECHANICAL GIF (shown at natural height — not cropped) -->
-      <div class="cs-mechanical">
-        <img src="/images/project-pages/obagi/obagi-mechanical.gif" alt="Obagi Medical packaging mechanical" />
+      <!-- 3. MECHANICAL SLIDESHOW (reuses the shared .cs-row-slideshow crossfade
+           in js/casestudy.js; frames auto-advance in filename order) -->
+      <div class="cs-mechanical cs-row-slideshow">
+        <img src="/images/project-pages/obagi/obagi-mechanical-gif/artworkgif_flat_obagi_final_1_.jpg" alt="Obagi Medical packaging mechanical" class="is-active" />
+        <img src="/images/project-pages/obagi/obagi-mechanical-gif/artworkgif_flat_obagi_final_2_.jpg" alt="" aria-hidden="true" />
+        <img src="/images/project-pages/obagi/obagi-mechanical-gif/artworkgif_flat_obagi_final_3_.jpg" alt="" aria-hidden="true" />
+        <img src="/images/project-pages/obagi/obagi-mechanical-gif/artworkgif_flat_obagi_final_4_.jpg" alt="" aria-hidden="true" />
+        <img src="/images/project-pages/obagi/obagi-mechanical-gif/artworkgif_flat_obagi_final_5_.jpg" alt="" aria-hidden="true" />
+        <img src="/images/project-pages/obagi/obagi-mechanical-gif/artworkgif_flat_obagi_final_6_.jpg" alt="" aria-hidden="true" />
+        <img src="/images/project-pages/obagi/obagi-mechanical-gif/artworkgif_flat_obagi_final_7_.jpg" alt="" aria-hidden="true" />
       </div>
 
       <!-- 4. AUTOPLAY VIDEO (muted loop, plays once scrolled into view — see /js/casestudy.js) -->

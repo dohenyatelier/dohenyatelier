@@ -6,7 +6,7 @@
   <title>Coming Soon — Doheny Atelier</title>
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <!-- Apply saved colour theme before first paint to avoid a flash -->
-  <script>(function(){try{if(localStorage.getItem('da-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+  <script>(function(){try{if(localStorage.getItem('da-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(sessionStorage.getItem('da-menu-wipe')){sessionStorage.removeItem('da-menu-wipe');document.documentElement.classList.add('menu-wipe-in');}}catch(e){}})();</script>
   <script defer src="/js/theme.js"></script>
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="https://use.typekit.net/gfl8gha.css" />
