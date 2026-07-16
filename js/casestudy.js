@@ -390,9 +390,10 @@ document.querySelectorAll('.cs-row-slideshow').forEach(function (el) {
 /* ── Hero / campaign video: starts playing only once the visitor scrolls to
    it, not on page load. Markup should NOT carry the `autoplay` attribute —
    this observer calls .play() the first time the video crosses into view,
-   then stops watching. Applies to any .cs-hero-video, .cs-youtube-video, or
-   .cs-campaign-video local <video> on any case study page. ── */
-document.querySelectorAll('.cs-hero-video video, .cs-youtube-video video, .cs-campaign-video video').forEach(function (video) {
+   then stops watching. Applies to any .cs-hero-video, .cs-youtube-video,
+   .cs-campaign-video, two-up row, or deliverable-card local <video> on any
+   case study page. ── */
+document.querySelectorAll('.cs-hero-video video, .cs-youtube-video video, .cs-campaign-video video, .cs-2colimgrow-img video, .cs-row-right video').forEach(function (video) {
   const io = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
