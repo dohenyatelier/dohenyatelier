@@ -1096,7 +1096,7 @@ html[data-theme="dark"] .footer-social-link img {
 
 .work-page-subtext {
   font-family: var(--font-body);
-  font-size: clamp(13px, 1.2vw, 18px);
+  font-size: clamp(14px, 1.05vw, 18px);   /* kept identical to .work-desc so both read the same at every width */
   letter-spacing: var(--ls-body);
   line-height: var(--lh-body);
   color: var(--graphite);
@@ -1128,6 +1128,126 @@ html[data-theme="dark"] .footer-social-link img {
 .work-img-wrap--short    { aspect-ratio: 6 / 5; }
 .work-img-wrap--wide     { aspect-ratio: 5 / 4; }
 .work-img-wrap--portrait { aspect-ratio: 4 / 5; }
+
+/* ── Work filters ────────────────────────────────────────────────────────────
+   The default view keeps the hand-composed asymmetric rows. Selecting a filter
+   adds .is-filtering to .work-rows: the individual .work-row grids become
+   display:contents so every .work-item flows as a direct child of one uniform
+   grid, and GSAP Flip (js/workfilter.js) animates the survivors into place. ── */
+.work-rows {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 5.6vw, 80px);          /* the inter-row gap, moved off .work-page-grid */
+}
+
+.work-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: clamp(6px, 0.8vw, 14px);
+  margin-top: clamp(10px, 1.2vw, 18px);
+  font-family: var(--font-caps);
+  font-size: clamp(12px, 0.85vw, 14px);
+  letter-spacing: var(--ls-caps);
+  line-height: var(--lh-caps);
+  text-transform: uppercase;
+  color: var(--graphite);
+  /* Halve the filter→grid gap only. The .work-page-grid gap (clamp(48,5.6vw,80))
+     also spaces heading/subtext, so pull the grid up by half that instead of
+     touching the shared gap. */
+  margin-bottom: clamp(-40px, -2.8vw, -24px);
+}
+
+.work-filter-label { opacity: 1; }
+
+/* Inline custom dropdown (native <select> can't style option hover). */
+.work-dropdown { position: relative; }
+
+.work-dropdown-trigger {
+  display: inline-flex;
+  align-items: baseline;
+  gap: clamp(6px, 0.6vw, 10px);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: uppercase;   /* buttons don't inherit it from .work-filter in every UA */
+  color: var(--graphite);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--graphite);
+  padding: 0 2px clamp(2px, 0.3vw, 4px);
+  cursor: pointer;
+  transition: opacity .3s ease;
+}
+.work-dropdown-trigger:hover { opacity: .65; }
+
+.work-dropdown-caret {
+  width: clamp(9px, 0.8vw, 12px);
+  height: auto;
+  align-self: center;
+  transition: transform .3s ease;
+}
+.work-dropdown-trigger[aria-expanded="true"] .work-dropdown-caret { transform: rotate(180deg); }
+
+.work-dropdown-menu {
+  position: absolute;
+  top: calc(100% + clamp(8px, 0.8vw, 12px));
+  left: 0;
+  z-index: 5;
+  min-width: max(100%, 180px);
+  margin: 0;
+  padding: clamp(6px, 0.5vw, 8px) 0;
+  list-style: none;
+  background: var(--ecru);
+  border: 1px solid color-mix(in srgb, var(--graphite) 18%, transparent);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px -12px color-mix(in srgb, var(--graphite) 40%, transparent);
+  /* Closed state: fade + lift out, not interactive. JS toggles .is-open. */
+  opacity: 0;
+  transform: translateY(-6px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+}
+.work-dropdown-menu.is-open {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .25s ease, transform .25s ease, visibility 0s;
+}
+
+.work-dropdown-option {
+  padding: clamp(8px, 0.7vw, 11px) clamp(16px, 1.4vw, 22px);
+  white-space: nowrap;
+  cursor: pointer;
+  color: var(--graphite);
+  transition: background-color .2s ease, color .2s ease;
+}
+/* Hover / keyboard-highlight state for the options — warm beige, not grey. */
+.work-dropdown-option:hover,
+.work-dropdown-option.is-highlighted,
+/* Selected option stays full-opacity; the persistent highlight marks it. */
+.work-dropdown-option.is-selected {
+  background: var(--beige);
+}
+
+/* Filtering mode: collapse rows into one uniform grid. */
+.work-rows.is-filtering {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(12px, 1.4vw, 20px);
+}
+.work-rows.is-filtering .work-row  { display: contents; }
+.work-rows.is-filtering .work-img-wrap { aspect-ratio: 5 / 4; }   /* uniform cards */
+.work-item.is-hidden { display: none; }
+
+.work-filter-empty {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 1.2vw, 18px);
+  line-height: var(--lh-body);
+  color: var(--graphite);
+  opacity: .6;
+}
 
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -2727,11 +2847,24 @@ html[data-theme="dark"] .footer-social-link img {
   }
   /* match the ID-specificity of the base rule so this actually wins */
   #work-heading.work-page-heading { margin-bottom: 0; }
-  .work-page-subtext { margin-top: clamp(-16px, -3.5vw, -8px); margin-bottom: 0; }
+  .work-page-subtext { margin-top: clamp(-16px, -3.5vw, -8px); margin-bottom: 0; font-size: 4vw; }  /* match .work-desc's mobile size */
+  /* Shrink + tighten the filter caps so the label and dropdown sit on one line
+     instead of the dropdown wrapping awkwardly below on narrow phones. Also
+     pull the filter up toward the subtext and push the grid down so the
+     dropdown underline isn't crowding the first project. */
+  .work-filter {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    margin-top: -10px;
+    margin-bottom: -2px;
+  }
   .work-row--asym,
   .work-row--equal,
   .work-row--asym-rev { grid-template-columns: 1fr; }
   .work-row { gap: clamp(28px, 7vw, 40px); }
+  .work-rows { gap: clamp(28px, 7vw, 40px); }
+  /* Two-up filtered grid on phones — three columns is too tight. */
+  .work-rows.is-filtering { grid-template-columns: repeat(2, 1fr); }
 
   /* Services */
   .services { padding: 80px 24px; }

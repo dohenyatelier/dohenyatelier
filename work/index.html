@@ -74,16 +74,45 @@
     <h1 class="work-page-heading" id="work-heading">work</h1>
     <p class="work-page-subtext">A selection of projects across branding, packaging, and structural design.</p>
 
+    <!-- Category filter. Choosing an industry collapses the asymmetric rows into a
+         single uniform grid (CSS: .is-filtering) and GSAP Flip animates the
+         surviving cards into their new positions. "All industries" restores the
+         composed layout. Custom dropdown (not native <select>, so each option can
+         carry a hover state). Behaviour in js/workfilter.js. -->
+    <div class="work-filter">
+      <span class="work-filter-label">view doheny atelier's work in</span>
+      <div class="work-dropdown">
+        <button type="button" class="work-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+          <span class="work-dropdown-value">all industries</span>
+          <svg class="work-dropdown-caret" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+            <path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <ul class="work-dropdown-menu" role="listbox" aria-label="Filter projects by industry" tabindex="-1">
+          <li class="work-dropdown-option is-selected" role="option" data-filter="all"       aria-selected="true">all industries</li>
+          <li class="work-dropdown-option"            role="option" data-filter="skincare"  aria-selected="false">skincare</li>
+          <li class="work-dropdown-option"            role="option" data-filter="makeup"    aria-selected="false">makeup</li>
+          <li class="work-dropdown-option"            role="option" data-filter="fragrance" aria-selected="false">fragrance</li>
+          <li class="work-dropdown-option"            role="option" data-filter="haircare"  aria-selected="false">haircare</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- All rows live in one wrapper so filtering can collapse them into a
+         single uniform grid (rows become display:contents) while the heading,
+         subtext, and filters above stay put. -->
+    <div class="work-rows">
+
     <!-- Row 1: asym (left large, right small) -->
     <div class="work-row work-row--asym">
-      <div class="work-item" data-href="/work/casestudy/glowbar/">
+      <div class="work-item" data-category="skincare" data-href="/work/casestudy/glowbar/">
         <div class="work-img-wrap work-img-wrap--tall">
           <img src="/images/glowbar-2.png" alt="Glowbar Expert Cleanser retail packaging" />
         </div>
         <h2 class="work-title"><em>Glowbar</em></h2>
-        <p class="work-desc">Designed Glowbar's first-ever retail product; the Expert Cleanser, as well as newly launched Simple Solution and<br> Expert Cleanser's mini.</p>
+        <p class="work-desc">Designed Glowbar's first-ever retail product; the Expert Cleanser, as well as newly launched Simple Solution and Expert Cleanser's mini.</p>
       </div>
-      <div class="work-item" data-href="/work/casestudy/obagi/">
+      <div class="work-item" data-category="skincare" data-href="/work/casestudy/obagi/">
         <div class="work-img-wrap work-img-wrap--short">
           <img src="/images/obagi-1.png" alt="Obagi Medical skincare packaging" />
         </div>
@@ -94,21 +123,21 @@
 
     <!-- Row 2: equal trio -->
     <div class="work-row work-row--equal">
-      <div class="work-item" data-href="/work/casestudy/kyliecosmetics-rebrand/">
+      <div class="work-item" data-category="makeup" data-href="/work/casestudy/kyliecosmetics-rebrand/">
         <div class="work-img-wrap work-img-wrap--wide">
           <img src="/images/kylie-1.png" alt="Kylie Cosmetics rebrand packaging" />
         </div>
         <h2 class="work-title"><em>Kylie Cosmetics</em></h2>
         <p class="work-desc">Worked alongside beauty mogul Kylie Jenner to design her full packaging rebrand on both primary and secondary components.</p>
       </div>
-      <div class="work-item" data-href="/work/casestudy/kyliecosmetics-reindeercollection/">
+      <div class="work-item" data-category="makeup" data-href="/work/casestudy/kyliecosmetics-reindeercollection/">
         <div class="work-img-wrap work-img-wrap--wide">
           <img src="/images/work-page/kyliereindeer.png" alt="Kylie Cosmetics Holiday Collection packaging" />
         </div>
         <h2 class="work-title"><em>Kylie Cosmetics — Holiday Collection</em></h2>
         <p class="work-desc">Primary and secondary packaging design, PR box, advent calendar, stickers, and more for the cosmetics influencer brand.</p>
       </div>
-      <div class="work-item" data-href="/comingsoon/">
+      <div class="work-item" data-category="fragrance" data-href="/comingsoon/">
         <div class="work-img-wrap work-img-wrap--wide">
           <img src="/images/work-page/land-of-the-free.jpeg" alt="Land of the Free fragrance packaging" />
         </div>
@@ -120,7 +149,7 @@
 
     <!-- Row 3: asym-rev (left small, right large) -->
     <div class="work-row work-row--asym-rev">
-      <div class="work-item" data-href="/comingsoon/">
+      <div class="work-item" data-category="makeup" data-href="/comingsoon/">
         <div class="work-img-wrap work-img-wrap--portrait">
           <img src="/images/work-page/kylash.png" alt="Kylie Cosmetics Kylash Volume Mascara packaging" loading="lazy" />
         </div>
@@ -128,7 +157,7 @@
         <p class="work-desc">Custom-tooled primary packaging design.</p>
         <p class="work-disclaimer">Case Study Page Coming Soon</p>
       </div>
-      <div class="work-item" data-href="/comingsoon/">
+      <div class="work-item" data-category="makeup" data-href="/comingsoon/">
         <div class="work-img-wrap work-img-wrap--portrait">
           <img src="/images/work-page/kylielip.PNG" alt="Kylie Cosmetics Matte and Crème Lipstick packaging" loading="lazy" />
         </div>
@@ -140,7 +169,7 @@
 
     <!-- Row 4: equal trio -->
     <div class="work-row work-row--equal">
-      <div class="work-item" data-href="/comingsoon/">
+      <div class="work-item" data-category="fragrance" data-href="/comingsoon/">
         <div class="work-img-wrap work-img-wrap--wide">
           <img src="/images/work-page/nautica.png" alt="Nautica Oceans fragrance bottle" loading="lazy" />
         </div>
@@ -148,7 +177,7 @@
         <p class="work-desc">Custom-tooled primary bottle, secondary packaging design.</p>
         <p class="work-disclaimer">Case Study Page Coming Soon</p>
       </div>
-      <div class="work-item" data-href="/comingsoon/">
+      <div class="work-item" data-category="makeup" data-href="/comingsoon/">
         <div class="work-img-wrap work-img-wrap--wide">
           <img src="/images/work-page/kylie-stassie.png" alt="Kylie Cosmetics Stassie x Kylie Collection packaging" loading="lazy" />
         </div>
@@ -156,7 +185,7 @@
         <p class="work-desc">Primary and secondary packaging design.</p>
         <p class="work-disclaimer">Case Study Page Coming Soon</p>
       </div>
-      <div class="work-item" data-href="/comingsoon/">
+      <div class="work-item" data-category="haircare" data-href="/comingsoon/">
         <div class="work-img-wrap work-img-wrap--wide">
           <img src="/images/work-page/vegamour.webp" alt="Vegamour HYDR-8 haircare packaging" loading="lazy" />
         </div>
@@ -165,6 +194,11 @@
         <p class="work-disclaimer">Case Study Page Coming Soon</p>
       </div>
     </div>
+
+    </div><!-- /.work-rows -->
+
+    <!-- Empty-state note when a filter matches nothing (JS toggles hidden). -->
+    <p class="work-filter-empty" hidden>No projects in this category yet.</p>
 
   </section>
 
@@ -202,7 +236,10 @@
   <script>window.lenis = new Lenis({ autoRaf: true, autoToggle: true, anchors: true, allowNestedScroll: true, naiveDimensions: true, stopInertiaOnNavigate: true })</script>
   <script src="/js/mobile.js"></script>
   <script src="/js/transitions.js"></script>
+  <script src="/js/gsap.min.js"></script>
+  <script src="/js/Flip.min.js"></script>
   <script src="/js/workcards.js"></script>
+  <script src="/js/workfilter.js"></script>
   <script src="/js/scrollbar.js"></script>
   <script src="/js/backtotop.js"></script>
   <script src="/js/skeleton.js"></script>
