@@ -107,6 +107,10 @@
         <img class="expertise-img" data-expertise="1" src="/images/about/marcjacobs-3d-blush.png" alt="Marc Jacobs Beauty blush 3D rendering by Doheny Atelier" />
         <img class="expertise-img" data-expertise="2" src="/images/about/glowbar-carton.jpg" alt="Glowbar Spot Service carton graphic design by Doheny Atelier" />
         <img class="expertise-img" data-expertise="3" src="/images/about/marcjacobs-tech.jpg" alt="Marc Jacobs Beauty technical dielines by Doheny Atelier" />
+        <span class="expertise-caption" data-expertise="0">Obagi Brand Identity (Rebrand)</span>
+        <span class="expertise-caption" data-expertise="1">Marc Jacobs Beauty Blush 3D Rendering</span>
+        <span class="expertise-caption" data-expertise="2">Glowbar Spot Service Carton 2D Design</span>
+        <span class="expertise-caption" data-expertise="3">Marc Jacobs Beauty Technical Dielines</span>
       </div>
     </div>
     <div class="expertise-list">
@@ -116,7 +120,7 @@
           <hr class="expertise-rule" />
         </div>
         <p class="expertise-desc">We build brand systems from the ground up—naming, visual identity, messaging, and the strategic framework that ties it all together.</p>
-        <div class="expertise-item-img"><img src="/images/about/obagi-logo-tech.png" alt="Obagi logo technical construction by Doheny Atelier" /></div>
+        <div class="expertise-item-img"><img src="/images/about/obagi-logo-tech.png" alt="Obagi logo technical construction by Doheny Atelier" /><span class="expertise-caption">Obagi Brand Identity (Rebrand)</span></div>
       </div>
       <div class="expertise-item" data-expertise="1">
         <div class="expertise-header">
@@ -124,7 +128,7 @@
           <hr class="expertise-rule" />
         </div>
         <p class="expertise-desc">From industrial design to 3D modeling and rendering, we shape products that perform on shelf and online.</p>
-        <div class="expertise-item-img"><img src="/images/about/marcjacobs-3d-blush.png" alt="Marc Jacobs Beauty blush 3D rendering by Doheny Atelier" /></div>
+        <div class="expertise-item-img"><img src="/images/about/marcjacobs-3d-blush.png" alt="Marc Jacobs Beauty blush 3D rendering by Doheny Atelier" /><span class="expertise-caption">Marc Jacobs Beauty Blush 3D Rendering</span></div>
       </div>
       <div class="expertise-item" data-expertise="2">
         <div class="expertise-header">
@@ -132,7 +136,7 @@
           <hr class="expertise-rule" />
         </div>
         <p class="expertise-desc">Art direction, print, digital, and everything in between—we craft visual systems that are cohesive, ownable, and built to scale.</p>
-        <div class="expertise-item-img"><img src="/images/about/glowbar-carton.jpg" alt="Glowbar Spot Service carton graphic design by Doheny Atelier" /></div>
+        <div class="expertise-item-img"><img src="/images/about/glowbar-carton.jpg" alt="Glowbar Spot Service carton graphic design by Doheny Atelier" /><span class="expertise-caption">Glowbar Spot Service Carton 2D Design</span></div>
       </div>
       <div class="expertise-item" data-expertise="3">
         <div class="expertise-header">
@@ -140,7 +144,7 @@
           <hr class="expertise-rule" />
         </div>
         <p class="expertise-desc">We engineer the structure behind every product—developing technical dielines and production-ready specifications that carry a design from concept to manufacturing.</p>
-        <div class="expertise-item-img"><img src="/images/about/marcjacobs-tech.jpg" alt="Marc Jacobs Beauty technical dielines by Doheny Atelier" /></div>
+        <div class="expertise-item-img"><img src="/images/about/marcjacobs-tech.jpg" alt="Marc Jacobs Beauty technical dielines by Doheny Atelier" /><span class="expertise-caption">Marc Jacobs Beauty Technical Dielines</span></div>
       </div>
     </div>
   </section>
@@ -275,10 +279,12 @@
 
     const expertiseItems = document.querySelectorAll('.expertise-item');
     const expertiseImgs = document.querySelectorAll('.expertise-img');
+    const expertiseCaptions = document.querySelectorAll('.expertise-img-area .expertise-caption');
 
     const setExpertise = idx => {
       expertiseItems.forEach(i => i.classList.toggle('is-open', i.dataset.expertise === idx));
       expertiseImgs.forEach(img => img.classList.toggle('active', img.dataset.expertise === idx));
+      expertiseCaptions.forEach(c => c.classList.toggle('active', c.dataset.expertise === idx));
     };
 
     // Show the first card expanded by default so it's clear the cards reveal more.
