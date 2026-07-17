@@ -1026,6 +1026,24 @@ html[data-theme="dark"] .footer-social-link img {
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+/* Arrow affordance — sits next to each title at rest to signal "hover me",
+   then drags to the right on hover as the description slides in behind it. */
+.service-name::after {
+  content: "\2192";
+  display: inline-block;
+  margin-left: 0.6em;
+  color: var(--graphite);
+  transform: translateX(0);
+  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.service-item:hover .service-name::after {
+  transform: translateX(9px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .service-name::after,
+  .service-item:hover .service-name::after { transition: none; transform: none; }
+}
 .service-desc {
   font-family: var(--font-body);
   font-size: clamp(12px, 1vw, 16px);
