@@ -65,23 +65,6 @@
     <h1 class="about-hero-heading">At Doheny Atelier, we turn ideas into brands with staying power. We work closely with each client to develop the strategy, identity, and packaging that move a product from concept to shelf—and into consumer hands. We believe the best work often lives beyond the brief, so we not only deliver what's asked, we show you what's possible.</h1>
   </section>
 
-  <!-- IMAGE COLLAGE -->
-  <section class="about-images">
-    <div class="about-img-wrap">
-      <img src="/images/about/kylie-about.png" alt="Kylie Cosmetics packaging designed by Doheny Atelier" />
-    </div>
-    <div class="about-img-wrap">
-      <img src="/images/about/obagi-about.png" alt="Obagi Medical branding by Doheny Atelier" />
-    </div>
-    <div class="about-img-wrap">
-      <img src="/images/about/nautica-about.png" alt="Nautica brand design by Doheny Atelier" />
-    </div>
-    <div class="about-img-wrap">
-      <img src="/images/about/kylie-about-2.gif" alt="Kylie Cosmetics product design by Doheny Atelier" />
-    </div>
-  </section>
-
-
   <!-- FOUNDER -->
   <section class="founder">
     <div class="founder-grid">
@@ -99,15 +82,31 @@
     </div>
   </section>
 
+  <!-- IMAGE COLLAGE -->
+  <section class="about-images">
+    <div class="about-img-wrap">
+      <img src="/images/about/kylie-about.png" alt="Kylie Cosmetics packaging designed by Doheny Atelier" />
+    </div>
+    <div class="about-img-wrap">
+      <img src="/images/about/obagi-about.png" alt="Obagi Medical branding by Doheny Atelier" />
+    </div>
+    <div class="about-img-wrap">
+      <img src="/images/about/nautica-about.png" alt="Nautica brand design by Doheny Atelier" />
+    </div>
+    <div class="about-img-wrap">
+      <img src="/images/about/kylie-about-2.gif" alt="Kylie Cosmetics product design by Doheny Atelier" />
+    </div>
+  </section>
+
   <!-- EXPERTISE -->
   <section class="expertise" id="expertise">
     <div class="expertise-left">
       <p class="expertise-label">Our Expertise</p>
       <div class="expertise-img-area">
-        <img class="expertise-img" data-expertise="0" src="/images/about/obagi-about.png" alt="Obagi Medical branding by Doheny Atelier" />
-        <img class="expertise-img" data-expertise="1" src="/images/about/kylie-about.png" alt="Kylie Cosmetics packaging designed by Doheny Atelier" />
-        <img class="expertise-img" data-expertise="2" src="/images/about/kylie-about-2.png" alt="Kylie Cosmetics product design by Doheny Atelier" />
-        <img class="expertise-img" data-expertise="3" src="/images/about/nautica-about.png" alt="Nautica brand design by Doheny Atelier" />
+        <img class="expertise-img" data-expertise="0" src="/images/about/obagi-logo-tech.png" alt="Obagi logo technical construction by Doheny Atelier" />
+        <img class="expertise-img" data-expertise="1" src="/images/about/marcjacobs-3d-blush.png" alt="Marc Jacobs Beauty blush 3D rendering by Doheny Atelier" />
+        <img class="expertise-img" data-expertise="2" src="/images/about/glowbar-carton.jpg" alt="Glowbar Spot Service carton graphic design by Doheny Atelier" />
+        <img class="expertise-img" data-expertise="3" src="/images/about/marcjacobs-tech.jpg" alt="Marc Jacobs Beauty technical dielines by Doheny Atelier" />
       </div>
     </div>
     <div class="expertise-list">
@@ -117,7 +116,7 @@
           <hr class="expertise-rule" />
         </div>
         <p class="expertise-desc">We build brand systems from the ground up—naming, visual identity, messaging, and the strategic framework that ties it all together.</p>
-        <div class="expertise-item-img"><img src="/images/about/obagi-about.png" alt="Obagi Medical branding by Doheny Atelier" /></div>
+        <div class="expertise-item-img"><img src="/images/about/obagi-logo-tech.png" alt="Obagi logo technical construction by Doheny Atelier" /></div>
       </div>
       <div class="expertise-item" data-expertise="1">
         <div class="expertise-header">
@@ -125,7 +124,7 @@
           <hr class="expertise-rule" />
         </div>
         <p class="expertise-desc">From industrial design to 3D modeling and rendering, we shape products that perform on shelf and online.</p>
-        <div class="expertise-item-img"><img src="/images/about/kylie-about.png" alt="Kylie Cosmetics packaging designed by Doheny Atelier" /></div>
+        <div class="expertise-item-img"><img src="/images/about/marcjacobs-3d-blush.png" alt="Marc Jacobs Beauty blush 3D rendering by Doheny Atelier" /></div>
       </div>
       <div class="expertise-item" data-expertise="2">
         <div class="expertise-header">
@@ -133,7 +132,7 @@
           <hr class="expertise-rule" />
         </div>
         <p class="expertise-desc">Art direction, print, digital, and everything in between—we craft visual systems that are cohesive, ownable, and built to scale.</p>
-        <div class="expertise-item-img"><img src="/images/about/kylie-about-2.png" alt="Kylie Cosmetics product design by Doheny Atelier" /></div>
+        <div class="expertise-item-img"><img src="/images/about/glowbar-carton.jpg" alt="Glowbar Spot Service carton graphic design by Doheny Atelier" /></div>
       </div>
       <div class="expertise-item" data-expertise="3">
         <div class="expertise-header">
@@ -141,7 +140,7 @@
           <hr class="expertise-rule" />
         </div>
         <p class="expertise-desc">We engineer the structure behind every product—developing technical dielines and production-ready specifications that carry a design from concept to manufacturing.</p>
-        <div class="expertise-item-img"><img src="/images/about/nautica-about.png" alt="Nautica brand design by Doheny Atelier" /></div>
+        <div class="expertise-item-img"><img src="/images/about/marcjacobs-tech.jpg" alt="Marc Jacobs Beauty technical dielines by Doheny Atelier" /></div>
       </div>
     </div>
   </section>
@@ -277,16 +276,17 @@
     const expertiseItems = document.querySelectorAll('.expertise-item');
     const expertiseImgs = document.querySelectorAll('.expertise-img');
 
+    const setExpertise = idx => {
+      expertiseItems.forEach(i => i.classList.toggle('is-open', i.dataset.expertise === idx));
+      expertiseImgs.forEach(img => img.classList.toggle('active', img.dataset.expertise === idx));
+    };
+
+    // Show the first card expanded by default so it's clear the cards reveal more.
+    // The last-hovered card stays expanded, so there's always one card open.
+    setExpertise('0');
+
     expertiseItems.forEach(item => {
-      item.addEventListener('mouseenter', () => {
-        const idx = item.dataset.expertise;
-        expertiseImgs.forEach(img => img.classList.remove('active'));
-        const target = document.querySelector(`.expertise-img[data-expertise="${idx}"]`);
-        if (target) target.classList.add('active');
-      });
-      item.addEventListener('mouseleave', () => {
-        expertiseImgs.forEach(img => img.classList.remove('active'));
-      });
+      item.addEventListener('mouseenter', () => setExpertise(item.dataset.expertise));
     });
   </script>
   <script src="/js/scrollbar.js"></script>
