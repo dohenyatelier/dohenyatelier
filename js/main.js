@@ -24,7 +24,14 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 /* ── Splash screen ──────────────────────────────────────── */
 const splash = document.getElementById('splash');
 
-if (sessionStorage.getItem('splashSeen')) {
+// sessionStorage access throws in privacy modes that block storage (Safari
+// "block all cookies", etc.). Guarded so a throw can't kill this script before
+// the dismiss handler is wired up — that would leave the splash overlay stuck
+// covering the whole page with no way to enter.
+let splashSeen = false;
+try { splashSeen = !!sessionStorage.getItem('splashSeen'); } catch (e) {}
+
+if (splashSeen) {
   // Skip splash when navigating back within the same tab session
   splash.style.display = 'none';
   document.dispatchEvent(new Event('splashDismissed'));
@@ -87,7 +94,7 @@ if (sessionStorage.getItem('splashSeen')) {
         splash.style.display = 'none';
         document.body.style.overflow = '';
         window.scrollTo(0, 0);
-        sessionStorage.setItem('splashSeen', '1');
+        try { sessionStorage.setItem('splashSeen', '1'); } catch (e) {}
         document.dispatchEvent(new Event('splashDismissed'));
       },
     });
