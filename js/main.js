@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
         imgs[current].classList.remove('hero-img--active');
         current = (current + 1) % imgs.length;
         imgs[current].classList.add('hero-img--active');
-      }, 1000);
+      }, 2500);
     }, 500);
   }
   document.addEventListener('splashDismissed', startSlideshow, { once: true });
