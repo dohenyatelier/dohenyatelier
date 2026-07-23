@@ -29,6 +29,31 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
   });
   hero.appendChild(dots);
 
+  /* Pause/play toggle — bottom-right, bottom-aligned with the dots. Lets
+     viewers stop the autoplay when they need longer to read a thumbnail. */
+  const PLAY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  const PAUSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+  let paused = false;
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.className = 'hero-toggle';
+  toggle.innerHTML = PAUSE_ICON;
+  toggle.setAttribute('aria-label', 'Pause slideshow');
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    paused = !paused;
+    if (paused) {
+      clearInterval(timer);
+      toggle.innerHTML = PLAY_ICON;
+      toggle.setAttribute('aria-label', 'Play slideshow');
+    } else {
+      restart();
+      toggle.innerHTML = PAUSE_ICON;
+      toggle.setAttribute('aria-label', 'Pause slideshow');
+    }
+  });
+  hero.appendChild(toggle);
+
   function goTo(i) {
     imgs[current].classList.remove('hero-img--active');
     buttons[current].classList.remove('is-active');
@@ -44,6 +69,7 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
   const advance = () => goTo((current + 1) % imgs.length);
   function restart() {
     clearInterval(timer);
+    if (paused) return;               // stay stopped while the user has paused
     timer = setInterval(advance, 2500);
   }
   function startSlideshow() {
@@ -77,23 +103,28 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
     preview.className = 'hero-preview';
     preview.setAttribute('aria-hidden', 'true');
     preview.innerHTML =
-      '<div class="hero-preview-thumb"><img alt="" /></div>' +
-      '<div class="hero-preview-meta">' +
-        '<h4 class="hero-preview-title"></h4>' +
-        '<p class="hero-preview-desc"></p>' +
+      '<div class="hero-preview-inner">' +
+        '<div class="hero-preview-thumb"><img alt="" /></div>' +
+        '<div class="hero-preview-meta">' +
+          '<h4 class="hero-preview-title"></h4>' +
+          '<p class="hero-preview-desc"></p>' +
+        '</div>' +
       '</div>';
     document.body.appendChild(preview);
     const pImg = preview.querySelector('img');
     const pTitle = preview.querySelector('.hero-preview-title');
     const pDesc = preview.querySelector('.hero-preview-desc');
 
-    /* Suppress the pill + preview when the pointer nears the dots nav so the
-       card doesn't cover the buttons the user is trying to click. */
-    const overDots = (e) => {
-      const r = dots.getBoundingClientRect();
-      const pad = 44;
-      return e.clientX >= r.left - pad && e.clientX <= r.right + pad &&
-             e.clientY >= r.top - pad && e.clientY <= r.bottom + pad;
+    /* Suppress the pill + preview when the pointer nears the dots nav or the
+       pause/play toggle so the card doesn't cover — and the real cursor stays
+       visible over — the controls the user is trying to click. */
+    const nearControl = (e) => {
+      const pad = 70;
+      return [dots, toggle].some((el) => {
+        const r = el.getBoundingClientRect();
+        return e.clientX >= r.left - pad && e.clientX <= r.right + pad &&
+               e.clientY >= r.top - pad && e.clientY <= r.bottom + pad;
+      });
     };
     const show = (on) => {
       label.classList.toggle('visible', on);
@@ -107,7 +138,7 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
       label.style.setProperty('--cy', y);
       preview.style.setProperty('--cx', x);
       preview.style.setProperty('--cy', y);
-      show(hovering && !overDots(e));
+      show(hovering && !nearControl(e));
     };
     imgs.forEach((img) => {
       const comingSoon = img.hasAttribute('data-coming-soon');
