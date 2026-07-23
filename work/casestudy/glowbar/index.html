@@ -25,6 +25,12 @@
   <meta name="twitter:title" content="Glowbar — Doheny Atelier" />
   <meta name="twitter:description" content="Founded by legacy aesthetician Rachel Liverman, Glowbar has rapidly expanded from a premier 20-location facial studio into retail, partnering with Doheny Atelier to develop a cohesive, custom packaging system for its growing line of skincare products." />
   <meta name="twitter:image" content="https://dohenyatelier.com/images/project-pages/glowbar/glowbar-cleanser-front.jpg" />
+  <style>
+    /* Glowbar's first hero runs taller than the shared 16/7; mobile keeps the
+       responsive 4/3 from styles.css. */
+    .cs-hero--tall { aspect-ratio: 16 / 8; }
+    .cs-hero--tall img { object-position: center; }
+  </style>
 </head>
 <body>
 
@@ -127,8 +133,8 @@
          hero → 2-up row → autoplay video. -->
     <div class="cs-hero-stack">
 
-      <!-- 1. HERO IMAGE (full-bleed, 16/7) -->
-      <div class="cs-hero">
+      <!-- 1. HERO IMAGE (full-bleed, taller than the shared 16/7) -->
+      <div class="cs-hero cs-hero--tall">
         <img src="/images/project-pages/glowbar/glowbar-packshots.jpeg" alt="Glowbar Expert Cleanser" />
       </div>
 
