@@ -948,9 +948,104 @@ html[data-theme="dark"] .footer-social-link img {
   object-position: center top;
   opacity: 0;
   transition: opacity 0.25s ease;
+  /* stacked images overlap — only the visible one should take the click */
+  pointer-events: none;
 }
 .hero-img.hero-img--active {
   opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+/* the "View case study" / "Coming soon" pill replaces the real cursor — but
+   only while the pill/preview is actually showing (JS toggles .cursor-hidden).
+   Near the dots the effect is suppressed, so the real cursor returns. */
+.hero.cursor-hidden .hero-img--active {
+  cursor: none;
+}
+
+/* Dots nav — sits above the slides, centered near the bottom edge */
+.hero-dots {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(16px, 2vw, 28px);
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+}
+.hero-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--ecru);
+  opacity: 0.5;                       /* inactive dots are dimmed */
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.hero-dot:hover { opacity: 0.75; }
+.hero-dot.is-active {
+  opacity: 1;
+  transform: scale(1.3);
+}
+
+/* Cursor preview card — trails the pointer beneath the "View case study" pill
+   on the home hero only (built in js/main.js, appended to <body>). */
+.hero-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;                 /* just under the pill (1000) */
+  width: 210px;
+  pointer-events: none;
+  /* anchor point sits below the pill; centered on the cursor's x */
+  transform: translate(calc(var(--cx, 0px) - 50%), calc(var(--cy, 0px) + 26px));
+  transform-origin: top center;
+  background: var(--white);
+  padding: 10px;
+  opacity: 0;
+  scale: 0.92;
+  transition: opacity 0.2s ease,
+              scale 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.hero-preview.visible {
+  opacity: 1;
+  scale: 1;
+}
+.hero-preview-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--ecru);
+}
+.hero-preview-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hero-preview-title {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: var(--lh-body);
+  color: var(--graphite);
+  margin: 12px 0 4px;
+}
+.hero-preview-desc {
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: var(--ls-body);
+  color: var(--graphite);
+  margin: 0;
+}
+@media (hover: none) {
+  .hero-preview { display: none; }
 }
 
 /* ── Tagline ───────────────────────────────────────────── */

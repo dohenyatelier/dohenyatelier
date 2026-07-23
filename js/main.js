@@ -2,19 +2,130 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 /* ── Hero slideshow ─────────────────────────────────────── */
 (function () {
+  const hero = document.querySelector('.hero');
   const imgs = document.querySelectorAll('.hero-img');
-  if (!imgs.length) return;
+  if (!hero || !imgs.length) return;
   let current = 0;
+  let timer = null;
+
+  /* Dots nav — one button per slide, built here so it always matches the
+     number of hero images. Clicking a dot jumps to that slide; autoplay keeps
+     running but its timer is reset so it doesn't advance immediately after. */
+  const dots = document.createElement('div');
+  dots.className = 'hero-dots';
+  dots.setAttribute('aria-label', 'Slideshow navigation');
+  const buttons = Array.from(imgs).map((img, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'hero-dot';
+    b.setAttribute('aria-label', 'Go to ' + (img.getAttribute('alt') || 'slide ' + (i + 1)));
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();          // don't trigger the slide's click-through
+      goTo(i);
+      restart();                    // reset autoplay so it doesn't jump right away
+    });
+    dots.appendChild(b);
+    return b;
+  });
+  hero.appendChild(dots);
+
+  function goTo(i) {
+    imgs[current].classList.remove('hero-img--active');
+    buttons[current].classList.remove('is-active');
+    current = i;
+    imgs[current].classList.add('hero-img--active');
+    buttons[current].classList.add('is-active');
+    buttons[current].setAttribute('aria-current', 'true');
+    buttons.forEach((b, j) => { if (j !== current) b.removeAttribute('aria-current'); });
+  }
+  buttons[0].classList.add('is-active');
+  buttons[0].setAttribute('aria-current', 'true');
+
+  const advance = () => goTo((current + 1) % imgs.length);
+  function restart() {
+    clearInterval(timer);
+    timer = setInterval(advance, 2500);
+  }
   function startSlideshow() {
-    setTimeout(() => {
-      setInterval(() => {
-        imgs[current].classList.remove('hero-img--active');
-        current = (current + 1) % imgs.length;
-        imgs[current].classList.add('hero-img--active');
-      }, 2500);
-    }, 500);
+    setTimeout(restart, 500);
   }
   document.addEventListener('splashDismissed', startSlideshow, { once: true });
+
+  /* Click-through + "View case study" cursor pill on the hero slides.
+     Mirrors the work-card behaviour (js/workcards.js) but the hero is a stack
+     of absolutely-positioned <img>s, not .work-item cards, so it's wired here.
+     Only the active slide takes pointer events (CSS), so a click always hits
+     the visible image. Nautica has no case study yet → "Coming soon", no nav. */
+  const go = (href) => {
+    if (!href) return;
+    document.body.classList.remove('is-loaded');            // fade out…
+    setTimeout(() => { window.location.href = href; }, 400);  // …then navigate
+  };
+
+  imgs.forEach((img) => {
+    img.addEventListener('click', () => go(img.dataset.href));
+  });
+
+  const label = document.getElementById('cursorLabel');
+  if (label && window.matchMedia('(hover: hover)').matches) {
+    const labelText = label.querySelector('.cursor-label-inner') || label;
+
+    /* Preview thumbnail that trails the cursor UNDER the pill — home hero only.
+       Built here (not shared with the site-wide pill) so it never appears on
+       /work or the case studies. Reuses the slide's own image as the thumb. */
+    const preview = document.createElement('div');
+    preview.className = 'hero-preview';
+    preview.setAttribute('aria-hidden', 'true');
+    preview.innerHTML =
+      '<div class="hero-preview-thumb"><img alt="" /></div>' +
+      '<div class="hero-preview-meta">' +
+        '<h4 class="hero-preview-title"></h4>' +
+        '<p class="hero-preview-desc"></p>' +
+      '</div>';
+    document.body.appendChild(preview);
+    const pImg = preview.querySelector('img');
+    const pTitle = preview.querySelector('.hero-preview-title');
+    const pDesc = preview.querySelector('.hero-preview-desc');
+
+    /* Suppress the pill + preview when the pointer nears the dots nav so the
+       card doesn't cover the buttons the user is trying to click. */
+    const overDots = (e) => {
+      const r = dots.getBoundingClientRect();
+      const pad = 44;
+      return e.clientX >= r.left - pad && e.clientX <= r.right + pad &&
+             e.clientY >= r.top - pad && e.clientY <= r.bottom + pad;
+    };
+    const show = (on) => {
+      label.classList.toggle('visible', on);
+      preview.classList.toggle('visible', on);
+      hero.classList.toggle('cursor-hidden', on);   // real cursor only hidden while pill shows
+    };
+    let hovering = false;
+    const move = (e) => {
+      const x = e.clientX + 'px', y = e.clientY + 'px';
+      label.style.setProperty('--cx', x);
+      label.style.setProperty('--cy', y);
+      preview.style.setProperty('--cx', x);
+      preview.style.setProperty('--cy', y);
+      show(hovering && !overDots(e));
+    };
+    imgs.forEach((img) => {
+      const comingSoon = img.hasAttribute('data-coming-soon');
+      img.addEventListener('mousemove', move);
+      img.addEventListener('mouseenter', (e) => {
+        labelText.textContent = comingSoon ? 'Coming soon' : 'View case study';
+        pImg.src = img.dataset.thumb || img.currentSrc || img.src;
+        pTitle.textContent = img.dataset.title || img.alt || '';
+        pDesc.textContent = img.dataset.desc || '';
+        hovering = true;
+        move(e);
+      });
+      img.addEventListener('mouseleave', () => {
+        hovering = false;
+        show(false);
+      });
+    });
+  }
 })();
 
 /* NB: work-card click-through + the "View case study" cursor pill used to
