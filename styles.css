@@ -817,10 +817,10 @@ html[data-theme="dark"] .footer-social-link img {
   line-height: var(--lh-body);
   color: var(--graphite);
   opacity: 1;
-  max-width: 80%;
+  max-width: 100%;
 }
 .work-item:has(.work-img-wrap--tall) .work-desc {
-  max-width: 90%;
+  max-width: 100%;
 }
 .work-disclaimer {
   font-family: var(--font-caps);
@@ -1824,6 +1824,50 @@ html[data-theme="dark"] .footer-social-link img {
 /* keep each person's full name intact; wrapping only happens between names */
 .cs-name {
   white-space: nowrap;
+}
+
+/* Press: its own block between the About paragraphs and the contributors.
+   Same breathing room as .cs-contributors so About → Press → Contributors read
+   as three distinct sections. */
+.cs-press {
+  margin-top: 2vw;
+}
+
+.cs-press-title {
+  display: block;
+  font-family: var(--font-caps);
+  font-size: clamp(10px, 0.8vw, 13px);
+  letter-spacing: var(--ls-caps);
+  line-height: var(--lh-caps);
+  text-transform: uppercase;
+  color: var(--graphite);
+  margin-bottom: 0.75em;
+}
+
+.cs-press-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+
+.cs-press-list a {
+  font-family: var(--font-body);
+  font-size: clamp(12px, 1vw, 16px);
+  letter-spacing: var(--ls-body);
+  line-height: var(--lh-body);
+  color: var(--graphite);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  padding-bottom: 1px;
+  transition: border-color 0.3s ease, opacity 0.3s ease;
+}
+
+.cs-press-list a:hover {
+  border-bottom-color: var(--graphite);
+  opacity: 0.7;
 }
 
 .cs-hero-stack {
@@ -3305,6 +3349,10 @@ html[data-theme="dark"] .footer-social-link img {
   .cs-contributors { margin-top: 10vw; }
   .cs-contributors-list { column-gap: 4vw; row-gap: 4vw; }
   .cs-contributors-list li { font-size: 4vw; line-height: var(--lh-body); }
+  .cs-press { margin-top: 10vw; }
+  .cs-press-title { font-size: 3.4vw; }
+  .cs-press-list { gap: 3vw; }
+  .cs-press-list a { font-size: 4vw; line-height: var(--lh-body); }
 
   /* Hero stack */
   .cs-hero { width: 100%; aspect-ratio: 4 / 3; }
