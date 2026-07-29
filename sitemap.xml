@@ -33,11 +33,23 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://dohenyatelier.com/work/casestudy/kyliecosmetics-kylash/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://dohenyatelier.com/work/casestudy/obagi/</loc>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://dohenyatelier.com/work/casestudy/glowbar/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dohenyatelier.com/work/casestudy/nautica-oceans/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dohenyatelier.com/work/casestudy/colgate/</loc>
     <priority>0.8</priority>
   </url>
 </urlset>

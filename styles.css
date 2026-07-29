@@ -1985,20 +1985,16 @@ html[data-theme="dark"] .footer-social-link img {
   opacity: 1;
 }
 
-/* Hovering pauses the auto-advance (see /js/casestudy.js) — zoom the visible
-   frame slightly so the pause reads as an intentional response to the hover,
-   not a stall. Gated to hover-capable (pointer) devices only: on touch screens
-   a tap fires a sticky :hover, which would re-trigger the zoom on every slide
-   change. Touch devices get no hover effect at all. */
-@media (hover: hover) {
-  .cs-row-slideshow:hover img.is-active {
-    transform: scale(1.05);
-  }
-  /* The mechanical slideshow doesn't pause on hover (it fills the viewport, so
-     the cursor is always over it) — so it gets no hover zoom either. */
-  .cs-mechanical.cs-row-slideshow:hover img.is-active {
-    transform: none;
-  }
+/* Moving the cursor over the slideshow pauses the auto-advance (see
+   /js/casestudy.js, which toggles `.is-paused`) — zoom the visible frame
+   slightly so the pause reads as an intentional response, not a stall. Keyed off
+   the JS `.is-paused` class rather than `:hover` so a card that scrolls up under
+   a stationary cursor keeps playing un-zoomed until the visitor actually moves
+   the mouse. Only pointer devices ever get `.is-paused` (the listener is gated to
+   hover-capable devices), and the mechanical frame never pauses, so neither gets
+   the zoom. */
+.cs-row-slideshow.is-paused img.is-active {
+  transform: scale(1.05);
 }
 
 /* ── More Work (case-study footer grid) ── */
