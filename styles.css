@@ -1467,6 +1467,17 @@ html[data-theme="dark"] .footer-social-link img {
   color: var(--graphite);
 }
 
+.cs-meta-value a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.25s ease;
+}
+
+.cs-meta-value a:hover {
+  opacity: 0.6;
+}
+
 /* Hero image */
 .cs-hero {
   width: 98%;
