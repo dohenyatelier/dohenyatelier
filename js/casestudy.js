@@ -367,10 +367,12 @@ document.querySelectorAll('.cs-row-slideshow').forEach(function (el) {
     imgs[i].classList.add('is-active');
   };
   const start = function () {
+    el.classList.remove('is-paused');
     if (timer) return;
     timer = setInterval(advance, 1200);
   };
   const stop = function () {
+    el.classList.add('is-paused');
     clearInterval(timer);
     timer = null;
   };
@@ -381,8 +383,15 @@ document.querySelectorAll('.cs-row-slideshow').forEach(function (el) {
   // where there's no real hover. Also skip it for full-width slideshows that
   // fill the viewport (e.g. the mechanical frame): the cursor is essentially
   // always over them, so hover-pause would keep them permanently frozen.
+  //
+  // Pause on `mousemove`, not `mouseenter`: when the card scrolls up under a
+  // stationary cursor the browser fires a synthetic `mouseenter` even though the
+  // visitor never moved the mouse, which would freeze the slideshow the instant
+  // it appeared (and never resume, since no `mouseleave` follows a still cursor).
+  // Keying the pause off real cursor movement means it runs until the visitor
+  // actually moves their mouse over it.
   if (window.matchMedia('(hover: hover)').matches && !el.classList.contains('cs-mechanical')) {
-    el.addEventListener('mouseenter', stop);
+    el.addEventListener('mousemove', stop);
     el.addEventListener('mouseleave', start);
   }
 });
@@ -401,6 +410,6 @@ document.querySelectorAll('.cs-hero-video video, .cs-youtube-video video, .cs-ca
         io.unobserve(video);
       }
     });
-  }, { threshold: 0.5 });
+  }, { threshold: 0.01 });
   io.observe(video);
 });
