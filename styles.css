@@ -1511,8 +1511,23 @@ html[data-theme="dark"] .footer-social-link img {
   object-fit: cover;
 }
 
+/* Shift a two-up cell's crop toward the bottom of the source image. */
+.cs-2colimgrow-img.cs-crop-low img {
+  object-position: center bottom;
+}
+
 .cs-hero-video {
   aspect-ratio: 16 / 10;
+}
+
+/* Shorter hero image cropped hard to the right edge (used where the third hero
+   row is a still image, not a video). */
+.cs-hero-video.cs-crop-right {
+  aspect-ratio: 16 / 5;
+}
+
+.cs-hero-video.cs-crop-right img {
+  object-position: right center;
 }
 
 /* Four-up social row: mirrors the 2-up row but with four cells. Each image is
@@ -1791,9 +1806,12 @@ html[data-theme="dark"] .footer-social-link img {
   list-style: none;
   margin: 0;
   padding: 0;
-  /* two equal-width columns */
+  /* Two columns sized to their content (not forced equal) so a long role like
+     "Photography (Kylie x Stassie photoshoot)" keeps its own line instead of
+     wrapping; auto still lets a role wrap as a fallback if it can't fit. */
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto auto;
+  justify-content: start;
   column-gap: 2vw;
   row-gap: 1vw;
 }
@@ -1814,7 +1832,9 @@ html[data-theme="dark"] .footer-social-link img {
   font-family: var(--font-caps);
   font-size: 0.8em;
   letter-spacing: var(--ls-caps);
-  line-height: var(--lh-caps);
+  /* Tighter than --lh-caps (1.9) so roles that wrap to two lines don't get a
+     huge gap between them; single-line roles are unaffected. */
+  line-height: 1.35;
   text-transform: uppercase;
   font-weight: normal;
   opacity: 1;
@@ -1860,7 +1880,7 @@ html[data-theme="dark"] .footer-social-link img {
   line-height: var(--lh-body);
   color: var(--graphite);
   text-decoration: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid color-mix(in srgb, var(--graphite) 25%, transparent);
   padding-bottom: 1px;
   transition: border-color 0.3s ease, opacity 0.3s ease;
 }
@@ -2584,7 +2604,7 @@ html[data-theme="dark"] .footer-social-link img {
   font-weight: normal;
   font-size: clamp(38px, 3.2vw, 56px);
   letter-spacing: var(--ls-body);
-  line-height: var(--lh-body);
+  line-height: 1.1;
   color: var(--graphite);
   margin: 0 0 clamp(17px, 2.24vw, 28px);
 }
@@ -3297,6 +3317,7 @@ html[data-theme="dark"] .footer-social-link img {
   .cs-meta-col:last-child {
     position: static;
     left: auto;
+    gap: 28px;
   }
   .cs-meta-label { font-size: 3vw; }
   .cs-meta-value { font-size: 3.8vw; }
