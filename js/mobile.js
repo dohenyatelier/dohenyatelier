@@ -20,11 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeMenu = () => {
     menu.classList.remove('open');
     document.body.style.overflow = '';
+    hamburger.setAttribute('aria-expanded', 'false');
   };
 
   hamburger.addEventListener('click', () => {
     menu.classList.add('open');
     document.body.style.overflow = 'hidden';
+    hamburger.setAttribute('aria-expanded', 'true');
   });
 
   closeBtn.addEventListener('click', closeMenu);

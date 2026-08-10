@@ -13,12 +13,9 @@
   <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
 
   <!-- SEO -->
-  <!-- NOTE: kept noindexed while several cards below still link to /comingsoon/
-       (Kylie Holiday, Land of the Free, Kylash Mascara, Matte & Crème Lipstick,
-       Nautica Oceans, Stassie x Kylie, Vegamour HYDR-8). When every card links to
-       a live case study: remove this robots noindex and add /work/ + the
-       case-study URLs to /sitemap.xml. -->
-  <meta name="robots" content="noindex, nofollow" />
+  <!-- NOTE: all cards link to live case studies except Vegamour HYDR-8, which
+       still links to /comingsoon/ (its own thin placeholder is noindexed). The
+       Work index itself is indexable and listed in /sitemap.xml. -->
   <meta name="description" content="A selection of Doheny Atelier projects across branding, packaging, and structural design." />
   <link rel="canonical" href="https://dohenyatelier.com/work/" />
   <meta property="og:type" content="website" />
@@ -48,7 +45,7 @@
     </a>
     <a href="/expertise/" class="nav-link">Expertise</a>
     <a href="/contact/" class="nav-link">Contact</a>
-    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span>
       <span></span>
     </button>
