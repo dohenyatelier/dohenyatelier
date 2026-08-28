@@ -1228,7 +1228,7 @@ html[data-theme="dark"] .footer-social-link img {
 
 .work-page-subtext {
   font-family: var(--font-body);
-  font-size: clamp(14px, 1.05vw, 18px);   /* kept identical to .work-desc so both read the same at every width */
+  font-size: clamp(19px, 1.85vw, 30px); 
   letter-spacing: var(--ls-body);
   line-height: var(--lh-body);
   color: var(--graphite);
