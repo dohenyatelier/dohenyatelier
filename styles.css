@@ -546,6 +546,493 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
 html[data-theme="dark"] .theme-toggle .theme-toggle-moon { display: none; }
 html[data-theme="dark"] .theme-toggle .theme-toggle-sun  { display: block; }
 
+/* ── Accessibility menu (sticky, every page) ───────────────
+   Injected into every page by js/accessibility.js. A round glass pill (one
+   slot left of the theme toggle) opens a categorised grid of large,
+   high-contrast option tiles — built for maximum accessibility (big targets,
+   clear grouping, keyboard + screen-reader support). */
+.a11y-toggle {
+  position: fixed;
+  /* Clears the theme toggle (left 2rem + 3.25rem wide) with a small gap. */
+  left: 6rem;
+  bottom: 2rem;
+  z-index: 901;
+  width: 3.25rem;
+  height: 3.25rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--graphite-rgb), 0.28);
+  background: rgba(var(--ecru-rgb), 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--graphite);
+  cursor: pointer;
+  transition: background-color 0.5s ease, color 0.5s ease,
+              border-color 0.5s ease, transform 0.3s ease;
+}
+.a11y-toggle:hover { transform: scale(1.06); }
+.a11y-toggle:focus-visible { outline: 3px solid var(--graphite); outline-offset: 3px; }
+.a11y-toggle svg { display: block; width: 1.5rem; height: 1.5rem; }
+
+/* Invisible click-catcher behind the dialog (click outside to close). It does
+   NOT dim or blur the page, and does not block scrolling the page behind it. */
+.a11y-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 950;
+  background: transparent;
+}
+
+/* ── Keep the MENU immune to the adjustments it applies ────
+   Feature classes live on <html>, so without this the menu would restyle
+   ITSELF. Pin its design tokens locally (this beats the High-Contrast token
+   remap) while still following light/dark theme, and add per-feature counters
+   below. Text-size zoom, Invert and Brightness are countered elsewhere. */
+.a11y-toggle, .a11y-backdrop, .a11y-panel, .a11y-tooltip {
+  --white: #FFFFFF;   --white-rgb: 255,255,255;
+  --ecru: #F5F3EF;    --ecru-rgb: 245,243,239;
+  --beige: #CCC6BA;   --beige-rgb: 204,198,186;
+  --graphite: #292929;--graphite-rgb: 41,41,41;
+  /* Immune to the Letter Spacing (--ls-*) and Line Height (--lh-body) retunes. */
+  --ls-caps: 0.2em;   --ls-body: -0.035em;
+  --lh-body: 1.45;
+}
+html[data-theme="dark"] .a11y-toggle,
+html[data-theme="dark"] .a11y-backdrop,
+html[data-theme="dark"] .a11y-panel,
+html[data-theme="dark"] .a11y-tooltip {
+  --white: #1B1917;   --white-rgb: 27,25,23;
+  --ecru: #292929;    --ecru-rgb: 41,41,41;
+  --beige: #1B1917;   --beige-rgb: 27,25,23;
+  --graphite: #F5F3EF;--graphite-rgb: 245,243,239;
+}
+/* Readable / Dyslexia fonts must not reach the menu. */
+html.a11y-readable-font .a11y-panel .a11y-tile,
+html.a11y-readable-font .a11y-panel .a11y-tile-label,
+html.a11y-readable-font .a11y-panel .a11y-close,
+html.a11y-dyslexic-font .a11y-panel .a11y-tile,
+html.a11y-dyslexic-font .a11y-panel .a11y-tile-label,
+html.a11y-dyslexic-font .a11y-panel .a11y-close {
+  font-family: var(--font-body) !important; letter-spacing: var(--ls-body) !important;
+}
+html.a11y-readable-font .a11y-panel .a11y-panel-title,
+html.a11y-readable-font .a11y-panel .a11y-cat-title,
+html.a11y-readable-font .a11y-panel .a11y-reset,
+html.a11y-dyslexic-font .a11y-panel .a11y-panel-title,
+html.a11y-dyslexic-font .a11y-panel .a11y-cat-title,
+html.a11y-dyslexic-font .a11y-panel .a11y-reset {
+  font-family: var(--font-caps) !important; letter-spacing: var(--ls-caps) !important;
+}
+/* Bigger Cursor: keep the menu's normal pointers. */
+html.a11y-big-cursor .a11y-panel,
+html.a11y-big-cursor .a11y-panel *,
+html.a11y-big-cursor .a11y-toggle,
+html.a11y-big-cursor .a11y-toggle * { cursor: auto !important; }
+html.a11y-big-cursor .a11y-panel .a11y-tile,
+html.a11y-big-cursor .a11y-panel .a11y-close,
+html.a11y-big-cursor .a11y-panel .a11y-reset,
+html.a11y-big-cursor .a11y-toggle { cursor: pointer !important; }
+/* Highlight Titles must not outline the menu's own headings. */
+html.a11y-highlight-headings .a11y-panel .a11y-panel-title,
+html.a11y-highlight-headings .a11y-panel .a11y-cat-title { outline: none !important; }
+/* Stop Animations: leave the menu's own transitions working. */
+html.a11y-pause-anim .a11y-panel,
+html.a11y-pause-anim .a11y-panel *,
+html.a11y-pause-anim .a11y-toggle { transition-duration: 0.2s !important; }
+
+/* Panel ---------------------------------------------------- */
+/* The class rules below set display, which would otherwise beat the UA
+   [hidden] rule and leave the panel/backdrop permanently visible. */
+.a11y-panel[hidden],
+.a11y-backdrop[hidden] { display: none !important; }
+.a11y-panel {
+  position: fixed;
+  left: 2rem;
+  bottom: 6rem;
+  z-index: 951;
+  /* Fixed base size + line-height so the menu never inherits a Bigger-Text-
+     scaled font or a Line-Height-boosted leading. */
+  font-size: 1rem;
+  line-height: 1.4;
+  width: min(33rem, calc(100vw - 4rem));
+  max-height: min(46rem, calc(100vh - 8rem));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(var(--graphite-rgb), 0.28);
+  background: var(--ecru);
+  color: var(--graphite);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  font-family: var(--font-body);
+}
+.a11y-panel-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--graphite);
+  color: var(--ecru);
+}
+.a11y-panel-title {
+  margin: 0;
+  font-family: var(--font-caps);
+  font-size: 1.05rem;
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+  color: var(--ecru);
+}
+.a11y-close {
+  flex: 0 0 auto;
+  width: 2.4rem;
+  height: 2.4rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--ecru);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 0.5rem;
+}
+.a11y-close:hover { background: rgba(var(--ecru-rgb), 0.18); }
+.a11y-close:focus-visible { outline: 3px solid var(--ecru); outline-offset: 2px; }
+
+.a11y-panel-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.5rem 1.25rem 1.25rem;
+  -webkit-overflow-scrolling: touch;
+}
+.a11y-cat-title {
+  margin: 1.25rem 0 0.6rem;
+  font-family: var(--font-caps);
+  font-size: 0.78rem;
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+  color: var(--graphite);
+  opacity: 0.7;
+}
+.a11y-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+/* Option tile */
+.a11y-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 7rem;
+  padding: 0.85rem 0.6rem;
+  border: 1.5px solid rgba(var(--graphite-rgb), 0.18);
+  border-radius: 0.85rem;
+  background: var(--white);
+  color: var(--graphite);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.2s ease, background-color 0.2s ease,
+              transform 0.15s ease, box-shadow 0.2s ease;
+}
+.a11y-tile:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12); }
+.a11y-tile:focus-visible { outline: 3px solid var(--graphite); outline-offset: 3px; }
+/* Level tiles are clickable as a whole (step up a level) AND via their bars
+   (jump to a specific level). */
+.a11y-tile-level { cursor: pointer; }
+.a11y-tile-icon { display: block; height: 2rem; }
+.a11y-tile-icon svg { width: 1.9rem; height: 1.9rem; display: block; }
+.a11y-tile-label {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  letter-spacing: var(--ls-body);
+  font-weight: 600;
+}
+
+/* Active state — never colour-only: bold border + tint + a check badge. */
+.a11y-tile.is-active {
+  border-color: var(--graphite);
+  border-width: 2px;
+  background: rgba(var(--graphite-rgb), 0.08);
+}
+.a11y-tile.is-active::after {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: var(--graphite)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")
+    center / 0.8rem no-repeat;
+}
+html[data-theme="dark"] .a11y-tile.is-active::after {
+  background-color: var(--graphite);
+  /* stroke stays light on the (light, in dark theme) graphite chip */
+}
+
+/* Level dots (Bigger Text, Line Height, etc.) */
+.a11y-dots {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+}
+/* Each bar is its own button — click bar N to jump to level N. Transparent
+   padding enlarges the tap target while the visible bar stays slim. */
+.a11y-dot {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0.45rem 0.1rem;
+  margin: -0.35rem 0 0;
+  cursor: pointer;
+  display: block;
+  line-height: 0;
+}
+.a11y-dot::before {
+  content: "";
+  display: block;
+  width: 1.1rem;
+  height: 0.3rem;
+  border-radius: 1rem;
+  background: rgba(var(--graphite-rgb), 0.25);
+  transition: background-color 0.15s ease;
+}
+.a11y-dot:hover::before { background: rgba(var(--graphite-rgb), 0.5); }
+.a11y-dot.on::before { background: var(--graphite); }
+.a11y-dot:focus-visible { outline: none; }
+.a11y-dot:focus-visible::before { outline: 2px solid var(--graphite); outline-offset: 2px; }
+
+.a11y-panel-foot {
+  flex: 0 0 auto;
+  padding: 0;
+}
+.a11y-reset {
+  width: 100%;
+  padding: 1rem;
+  border: 0;
+  background: var(--graphite);
+  color: var(--ecru);
+  font-family: var(--font-caps);
+  font-size: 0.9rem;
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.a11y-reset svg { width: 1.1rem; height: 1.1rem; }
+.a11y-reset:hover { background: #000; }
+html[data-theme="dark"] .a11y-reset:hover { background: #fff; }
+.a11y-reset:focus-visible { outline: 3px solid var(--graphite); outline-offset: -6px; }
+
+/* ── Feature effects (applied to <html>) ─────────────────── */
+/* Line Height is driven by overriding the --lh-body token in JS (body copy uses
+   line-height: var(--lh-body)). Only running body copy opens up; headings and
+   caps labels keep their tight line-height, so sections aren't bloated beyond
+   the paragraphs that actually need the extra spacing. The menu pins the token
+   locally, so it stays unaffected. */
+
+/* Letter Spacing is driven by overriding the --ls-body and --ls-caps tokens in
+   JS (the site applies them via letter-spacing: var(--ls-*)). Body copy widens
+   through --ls-body and Engravers/caps text (nav, "The Design Agency") widens
+   through --ls-caps — no blanket <p> rule, so nothing breaks. The menu pins both
+   tokens locally, so it stays unaffected. */
+
+html.a11y-readable-font,
+html.a11y-readable-font body,
+html.a11y-readable-font p,
+html.a11y-readable-font li,
+html.a11y-readable-font span,
+html.a11y-readable-font a,
+html.a11y-readable-font h1,
+html.a11y-readable-font h2,
+html.a11y-readable-font h3,
+html.a11y-readable-font h4,
+html.a11y-readable-font h5,
+html.a11y-readable-font h6,
+html.a11y-readable-font button,
+html.a11y-readable-font input,
+html.a11y-readable-font textarea {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               Helvetica, Arial, sans-serif !important;
+  letter-spacing: normal !important;
+}
+
+/* Dyslexia-friendly: rounded, unambiguous letterforms (Comic-family is widely
+   recommended and installed; OpenDyslexic used if present). */
+html.a11y-dyslexic-font,
+html.a11y-dyslexic-font body,
+html.a11y-dyslexic-font p,
+html.a11y-dyslexic-font li,
+html.a11y-dyslexic-font span,
+html.a11y-dyslexic-font a,
+html.a11y-dyslexic-font h1,
+html.a11y-dyslexic-font h2,
+html.a11y-dyslexic-font h3,
+html.a11y-dyslexic-font h4,
+html.a11y-dyslexic-font h5,
+html.a11y-dyslexic-font h6,
+html.a11y-dyslexic-font button,
+html.a11y-dyslexic-font input,
+html.a11y-dyslexic-font textarea {
+  font-family: "OpenDyslexic", "Comic Sans MS", "Comic Neue", "Trebuchet MS",
+               sans-serif !important;
+  letter-spacing: normal !important;
+}
+
+/* High contrast: --beige is a LIGHT surface token, so it tracks the surface
+   (ecru), not the ink — mapping it to black is what blacked out sections. */
+html.a11y-contrast {
+  --ecru: #ffffff;  --white: #ffffff;  --beige: #ffffff;  --graphite: #000000;
+  --ecru-rgb: 255,255,255; --white-rgb: 255,255,255; --beige-rgb: 255,255,255; --graphite-rgb: 0,0,0;
+}
+html.a11y-contrast[data-theme="dark"] {
+  --ecru: #000000;  --white: #000000;  --beige: #000000;  --graphite: #ffffff;
+  --ecru-rgb: 0,0,0; --white-rgb: 0,0,0; --beige-rgb: 0,0,0; --graphite-rgb: 255,255,255;
+}
+html.a11y-contrast a { text-decoration: underline !important; }
+
+/* Highlight every link — high specificity + !important to beat per-component
+   link rules (nav, cards, footer). */
+html.a11y-highlight-links a,
+html.a11y-highlight-links a:link,
+html.a11y-highlight-links a:visited {
+  text-decoration: underline !important;
+  text-underline-offset: 0.15em !important;
+  outline: 2px solid currentColor !important;
+  outline-offset: 2px !important;
+  background: rgba(255, 232, 0, 0.28) !important;
+  border-radius: 2px !important;
+}
+
+html.a11y-highlight-headings h1,
+html.a11y-highlight-headings h2,
+html.a11y-highlight-headings h3,
+html.a11y-highlight-headings h4,
+html.a11y-highlight-headings h5,
+html.a11y-highlight-headings h6 {
+  outline: 2px dashed rgba(var(--graphite-rgb), 0.6) !important;
+  outline-offset: 4px;
+}
+
+/* Pause animations & transitions for motion sensitivity. */
+html.a11y-pause-anim *,
+html.a11y-pause-anim *::before,
+html.a11y-pause-anim *::after {
+  animation-duration: 0.001s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001s !important;
+  scroll-behavior: auto !important;
+}
+
+/* Hide images (keeps layout; leaves the menu's own icons untouched). */
+html.a11y-hide-images img,
+html.a11y-hide-images picture,
+html.a11y-hide-images video { opacity: 0 !important; }
+
+/* Large cursor. */
+html.a11y-big-cursor,
+html.a11y-big-cursor * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M6 2 L6 40 L16 30 L22 44 L28 41 L22 27 L36 27 Z' fill='%23fff' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E") 6 2, auto !important;
+}
+
+/* Colour filters (invert / grayscale / brightness) live on <html>; the menu
+   counter-filters itself so it stays readable. */
+.a11y-panel,
+.a11y-toggle,
+.theme-toggle,
+.a11y-guide-bar,
+.a11y-mask-top,
+.a11y-mask-bottom { filter: var(--a11y-counter-filter, none); }
+
+/* Reading guide bar following the pointer. */
+.a11y-guide-bar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 2.25rem;
+  transform: translateY(-50%);
+  background: rgba(255, 232, 0, 0.25);
+  border-top: 2px solid rgba(var(--graphite-rgb), 0.6);
+  border-bottom: 2px solid rgba(var(--graphite-rgb), 0.6);
+  pointer-events: none;
+  z-index: 940;
+}
+
+/* Reading mask — dims the page except a band at the pointer. */
+.a11y-mask-top,
+.a11y-mask-bottom {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 940;
+}
+.a11y-mask-top { top: 0; }
+.a11y-mask-bottom { bottom: 0; }
+
+/* Tooltip surfacing accessible names on hover/focus. */
+.a11y-tooltip {
+  position: fixed;
+  z-index: 960;
+  max-width: 18rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  background: var(--graphite);
+  color: var(--ecru);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.3;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Full-width bottom sheet on phones (the toggle stays beside the theme
+     toggle, bottom-left, at every size). */
+  .a11y-panel {
+    left: 0; right: 0; bottom: 0;
+    width: 100%;
+    max-height: 85vh;
+    border-radius: 1.1rem 1.1rem 0 0;
+    border-bottom: 0;
+  }
+  .a11y-panel-body { padding: 0.5rem 1rem 1rem; }
+  .a11y-grid { gap: 0.55rem; }
+  .a11y-tile { min-height: 6rem; padding: 0.7rem 0.4rem; gap: 0.45rem; }
+  .a11y-tile-label { font-size: 0.85rem; }
+  .a11y-tile-icon svg { width: 1.7rem; height: 1.7rem; }
+}
+@media (max-width: 380px) {
+  .a11y-tile { min-height: 5.4rem; }
+  .a11y-tile-label { font-size: 0.76rem; }
+  .a11y-panel-title { font-size: 0.9rem; }
+  .a11y-dot::before { width: 0.9rem; }
+}
+/* Landscape phones / very short viewports: use nearly the full height. */
+@media (max-height: 520px) {
+  .a11y-panel { max-height: calc(100vh - 1rem); bottom: 0; }
+}
+
 /* No scroll-driven-animation support (e.g. Safari): the ring stays a static
    beige donut (0% fill) — the scroll-to-top link still works everywhere. */
 
@@ -1076,7 +1563,7 @@ html[data-theme="dark"] .footer-social-link img {
 .hero-preview-desc {
   font-family: var(--font-body);
   font-size: 11px;
-  line-height: 1.4;
+  line-height: var(--a11y-lh, 1.4);
   letter-spacing: var(--ls-body);
   color: var(--graphite);
   margin: 0;
@@ -2130,7 +2617,8 @@ html[data-theme="dark"] .footer-social-link img {
   font-size: clamp(22px, 2vw, 32px);
   font-weight: normal;
   letter-spacing: var(--ls-body);
-  line-height: 1.35;
+  /* Body-style lead: opt into the Line Height control while keeping 1.35 default. */
+  line-height: var(--a11y-lh, 1.35);
   color: var(--graphite);
   max-width: 90%;
   /* Side padding pulls the text column in from the section edges so the
@@ -2313,7 +2801,7 @@ html[data-theme="dark"] .footer-social-link img {
   font-family: var(--font-body);
   font-size: clamp(11px, 0.85vw, 13px);
   letter-spacing: var(--ls-body);
-  line-height: 1.3;
+  line-height: var(--a11y-lh, 1.3);
   text-align: right;
   color: rgba(var(--graphite-rgb), 0.55);
 }
@@ -3067,7 +3555,7 @@ html[data-theme="dark"] .footer-social-link img {
   }
   /* Statement copy sits just above body size; balance prevents an orphan word
      (e.g. "and remembering." breaking apart onto its own lines). */
-  .tagline p { font-size: 7.5vw; line-height: 1.25; text-wrap: balance; }
+  .tagline p { font-size: 7.5vw; line-height: var(--a11y-lh, 1.25); text-wrap: balance; }
   /* Match the higher-specificity desktop rule (.tagline p.tagline-lead) and
      size the caps eyebrow to the same 3vw as .section-label ("Featured Works")
      below it, mirroring how both are 0.85vw on desktop. */
@@ -3209,7 +3697,7 @@ html[data-theme="dark"] .footer-social-link img {
   .about-copy p {
     font-size: 4vw;
     max-width: 100%;
-    line-height: 1.2;
+    line-height: var(--a11y-lh, 1.2);
   }
 
   /* Founder */

@@ -8,6 +8,7 @@
   <!-- Apply saved colour theme before first paint to avoid a flash -->
   <script>(function(){try{if(localStorage.getItem('da-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(sessionStorage.getItem('da-menu-wipe')){sessionStorage.removeItem('da-menu-wipe');document.documentElement.classList.add('menu-wipe-in');}}catch(e){}})();</script>
   <script defer src="/js/theme.js"></script>
+  <script defer src="/js/accessibility.js"></script>
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="https://use.typekit.net/gfl8gha.css" />
   <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
@@ -40,7 +41,7 @@
     </a>
     <a href="/expertise/" class="nav-link">Expertise</a>
     <a href="/contact/" class="nav-link">Contact</a>
-    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span>
       <span></span>
     </button>
@@ -78,7 +79,7 @@
       <div class="qa-intro-body">
         <div class="qa-block">
           <h2 class="qa-q">Tell me about yourself.</h2>
-          <p class="qa-a">I'm a designer, and the founder and principal of Doheny Atelier. Since 2018, my freelance practice has grown into a multidisciplinary agency specializing in creative and design direction. With expertise in packaging design, my agency offers creative strategy and branding services.</p>
+          <p class="qa-a">I'm a designer, and the founder and principal of Doheny Atelier. Since 2013, my freelance practice has grown into a multidisciplinary agency specializing in creative and design direction. With expertise in packaging design, my agency offers creative strategy and branding services.</p>
         </div>
 
         <div class="qa-block">
