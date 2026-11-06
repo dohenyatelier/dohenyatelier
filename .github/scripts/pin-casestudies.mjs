@@ -77,7 +77,8 @@ async function readCaseStudy(slug) {
     const src = attr(tag, 'src') || attr(tag, 'data-src');
     if (!src || !PINNABLE.test(src)) continue;
     const url = new URL(src, `${SITE}/work/casestudy/${slug}/`).href;
-    if (seen.has(url)) continue;
+    // Off-site images are YouTube video thumbnails, which count as video.
+    if (!url.startsWith(`${SITE}/`) || seen.has(url)) continue;
     seen.add(url);
     images.push({ url, alt: attr(tag, 'alt') });
   }
@@ -178,6 +179,7 @@ function createPin(token, board, page, image, asJpg = false) {
 const token = await getAccessToken();
 const boards = await listAll(token, '/boards');
 const failures = [];
+const isRateLimit = (err) => err.message.includes('(429)');
 const ledger = JSON.parse(await readFile(LEDGER, 'utf8').catch(() => '{}'));
 
 // Saved after every pin so a run that dies partway still records what it posted.
@@ -186,7 +188,7 @@ async function recordPinned(slug, url) {
   await writeFile(LEDGER, JSON.stringify(ledger, null, 2) + '\n');
 }
 
-for (const page of pages) {
+pages: for (const page of pages) {
   let board = boards.find((b) => b.name === boardName(page));
   if (!board) {
     if (!lists.new.includes(page.slug)) {
@@ -215,8 +217,9 @@ for (const page of pages) {
       try {
         pin = await createPin(token, board, page, image);
       } catch (err) {
-        // A GIF would lose its animation as a JPG, so it isn't retried that way.
-        if (/\.gif$/i.test(image.url)) throw err;
+        // A GIF would lose its animation as a JPG, and a rate limit won't lift
+        // for a retry, so neither is retried that way.
+        if (/\.gif$/i.test(image.url) || isRateLimit(err)) throw err;
         console.log(`  retrying as a clean JPG: ${image.url} (${err.message})`);
         await sleep(5000);
         pin = await createPin(token, board, page, image, true);
@@ -227,8 +230,14 @@ for (const page of pages) {
       // One bad image shouldn't stop the rest of the case studies.
       failures.push({ url: image.url, error: err.message });
       console.log(`  FAILED ${image.url}: ${err.message}`);
+      // Pushing on through a spam block only makes it worse, so stop for now.
+      // Anything left is picked up by running the workflow again later.
+      if (isRateLimit(err)) {
+        console.log('\nPinterest rate limit hit, stopping. Run again later for the rest.');
+        break pages;
+      }
     }
-    await sleep(1500); // stay well under Pinterest's rate limits
+    await sleep(5000); // Pinterest treats fast bursts of pins as spam
   }
 }
 
