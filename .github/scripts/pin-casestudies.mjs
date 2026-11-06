@@ -100,8 +100,8 @@ async function waitUntilLive(url, deadline) {
 
 // Most images are fetched by Pinterest straight from the live site; AVIF files
 // are converted to JPG here first (sharp is installed by the workflow).
-async function mediaSource(url) {
-  if (!CONVERT_TO_JPG.test(url)) return { source_type: 'image_url', url };
+async function mediaSource(url, asJpg = false) {
+  if (!asJpg && !CONVERT_TO_JPG.test(url)) return { source_type: 'image_url', url };
   const { default: sharp } = await import('sharp');
   const original = Buffer.from(await (await fetch(url)).arrayBuffer());
   const jpg = await sharp(original).flatten({ background: '#ffffff' }).jpeg({ quality: 92 }).toBuffer();
@@ -159,8 +159,24 @@ if (DRY_RUN) {
   process.exit(0);
 }
 
+function createPin(token, board, page, image, asJpg = false) {
+  return mediaSource(image.url, asJpg).then((media_source) => api(token, '/pins', {
+    method: 'POST',
+    body: JSON.stringify({
+      board_id: board.id,
+      title: page.title.slice(0, 100),
+      description: page.description.slice(0, 800),
+      link: page.link,
+      alt_text: (image.alt || page.title).slice(0, 500),
+      note: image.url,
+      media_source,
+    }),
+  }));
+}
+
 const token = await getAccessToken();
 const boards = await listAll(token, '/boards');
+const failures = [];
 
 for (const page of pages) {
   let board = boards.find((b) => b.name === boardName(page));
@@ -179,27 +195,43 @@ for (const page of pages) {
 
   // Each pin stores its source image URL in its private note, which is how
   // images already on the board are recognised.
-  const pinned = new Set((await listAll(token, `/boards/${board.id}/pins`)).map((pin) => pin.note));
+  const existing = await listAll(token, `/boards/${board.id}/pins`);
+  // Without notes there is no way to tell what is already pinned, so stop
+  // here rather than risk posting duplicates.
+  if (existing.length && !existing.some((pin) => pin.note)) {
+    throw new Error(`${page.slug}: board has ${existing.length} pins but no notes, so duplicates can't be detected. Nothing was posted to it.`);
+  }
+  const pinned = new Set(existing.map((pin) => pin.note));
   const todo = page.images.filter((image) => !pinned.has(image.url));
   console.log(`${page.slug}: ${todo.length} new of ${page.images.length} images.`);
 
   const deadline = Date.now() + WAIT_FOR_LIVE_MS;
   // Newest pins show first on a board, so pin bottom-up to keep page order.
   for (const image of todo.reverse()) {
-    await waitUntilLive(image.url, deadline);
-    const pin = await api(token, '/pins', {
-      method: 'POST',
-      body: JSON.stringify({
-        board_id: board.id,
-        title: page.title.slice(0, 100),
-        description: page.description.slice(0, 800),
-        link: page.link,
-        alt_text: (image.alt || page.title).slice(0, 500),
-        note: image.url,
-        media_source: await mediaSource(image.url),
-      }),
-    });
-    console.log(`  pinned ${image.url} → https://www.pinterest.com/pin/${pin.id}/`);
+    try {
+      await waitUntilLive(image.url, deadline);
+      let pin;
+      try {
+        pin = await createPin(token, board, page, image);
+      } catch (err) {
+        // A GIF would lose its animation as a JPG, so it isn't retried that way.
+        if (/\.gif$/i.test(image.url)) throw err;
+        console.log(`  retrying as a clean JPG: ${image.url} (${err.message})`);
+        await sleep(5000);
+        pin = await createPin(token, board, page, image, true);
+      }
+      console.log(`  pinned ${image.url} → https://www.pinterest.com/pin/${pin.id}/`);
+    } catch (err) {
+      // One bad image shouldn't stop the rest of the case studies.
+      failures.push({ url: image.url, error: err.message });
+      console.log(`  FAILED ${image.url}: ${err.message}`);
+    }
     await sleep(1500); // stay well under Pinterest's rate limits
   }
+}
+
+if (failures.length) {
+  console.log(`\n${failures.length} image(s) could not be pinned:`);
+  for (const failure of failures) console.log(`  ${failure.url}\n    ${failure.error}`);
+  process.exitCode = 1;
 }
