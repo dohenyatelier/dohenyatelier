@@ -16,10 +16,10 @@ import { readFile, writeFile } from 'node:fs/promises';
 const API = process.env.PINTEREST_API_BASE || 'https://api.pinterest.com/v5';
 const SITE = 'https://dohenyatelier.com';
 const DRY_RUN = process.env.DRY_RUN === '1';
-const SITE_SUFFIX = / ‚Äî Doheny Atelier$/;
+const SITE_SUFFIX = / — Doheny Atelier$/;
 const PINNABLE = /\.(jpe?g|png|webp|gif|avif)$/i; // videos (.mp4) and .svg are never pinned
 const CONVERT_TO_JPG = /\.avif$/i; // Pinterest can't read AVIF, so these are sent as JPG
-const WAIT_FOR_LIVE_MS = 15 * 60 * 1000; // GitHub Pages deploy usually takes 1‚Äì5 min
+const WAIT_FOR_LIVE_MS = 15 * 60 * 1000; // GitHub Pages deploy usually takes 1–5 min
 const LEDGER = '.github/pinterest-pinned.json'; // { "<slug>": ["<image url>", ...] }
 
 const lists = { new: [], changed: [] };
@@ -37,7 +37,7 @@ if (!lists.new.length && !lists.changed.length) {
 
 function env(name) {
   const value = process.env[name];
-  if (!value) throw new Error(`Missing ${name} (add it under repo Settings ‚Üí Secrets and variables ‚Üí Actions).`);
+  if (!value) throw new Error(`Missing ${name} (add it under repo Settings → Secrets and variables → Actions).`);
   return value;
 }
 
@@ -155,7 +155,7 @@ const pages = await Promise.all([...lists.new, ...lists.changed].map(readCaseStu
 if (DRY_RUN) {
   for (const page of pages) {
     const mode = lists.new.includes(page.slug) ? 'create board if needed' : 'only if board exists';
-    console.log(`\n[dry run] ${page.slug} ‚Üí board "${boardName(page)}" (${mode}), ${page.images.length} pins:`);
+    console.log(`\n[dry run] ${page.slug} → board "${boardName(page)}" (${mode}), ${page.images.length} pins:`);
     for (const image of page.images) console.log(`  ${image.url}  alt="${image.alt}"`);
   }
   process.exit(0);
@@ -222,7 +222,7 @@ for (const page of pages) {
         pin = await createPin(token, board, page, image, true);
       }
       await recordPinned(page.slug, image.url);
-      console.log(`  pinned ${image.url} ‚Üí https://www.pinterest.com/pin/${pin.id}/`);
+      console.log(`  pinned ${image.url} → https://www.pinterest.com/pin/${pin.id}/`);
     } catch (err) {
       // One bad image shouldn't stop the rest of the case studies.
       failures.push({ url: image.url, error: err.message });
