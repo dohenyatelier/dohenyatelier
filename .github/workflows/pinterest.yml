@@ -1,0 +1,73 @@
+# Gives each case study its own Pinterest board and pins every image on it.
+# New case study page → new board + all its images.
+# Edited case study page → any newly added images go onto its existing board.
+# Setup and secrets: see .github/PINTEREST.md
+name: Pin case studies to Pinterest
+
+on:
+  push:
+    branches: [main]
+    paths: ['work/casestudy/*/index.html']
+  # Manual run from the Actions tab, e.g. to create boards for existing case studies.
+  workflow_dispatch:
+    inputs:
+      slugs:
+        description: 'Case study folder name(s), space-separated (e.g. obagi colgate)'
+        required: true
+      dry_run:
+        description: 'Dry run: show what would be pinned without posting'
+        type: boolean
+        default: false
+
+concurrency: pinterest
+
+jobs:
+  pin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Find case study pages to pin
+        id: find
+        env:
+          BEFORE: ${{ github.event.before }}
+          MANUAL_SLUGS: ${{ inputs.slugs }}
+        run: |
+          slugs_for() {
+            git diff --name-only --diff-filter="$1" "$BEFORE" "$GITHUB_SHA" -- 'work/casestudy/*/index.html' \
+              | awk -F/ '{print $3}' | tr '\n' ' '
+          }
+          new=""; changed=""
+          if [ -n "$MANUAL_SLUGS" ]; then
+            new="$MANUAL_SLUGS"
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            new=$(slugs_for A)
+            changed=$(slugs_for M)
+          fi
+          echo "new=$new" >> "$GITHUB_OUTPUT"
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          echo "New case studies: ${new:-none}"
+          echo "Edited case studies: ${changed:-none}"
+
+      - name: Install image converter (for .avif images)
+        if: steps.find.outputs.new != '' || steps.find.outputs.changed != ''
+        run: npm install --no-save --no-package-lock --prefix .github/scripts sharp
+
+      - name: Pin to Pinterest
+        if: steps.find.outputs.new != '' || steps.find.outputs.changed != ''
+        env:
+          PINTEREST_APP_ID: ${{ secrets.PINTEREST_APP_ID }}
+          PINTEREST_APP_SECRET: ${{ secrets.PINTEREST_APP_SECRET }}
+          PINTEREST_REFRESH_TOKEN: ${{ secrets.PINTEREST_REFRESH_TOKEN }}
+          PINTEREST_API_BASE: ${{ vars.PINTEREST_API_BASE }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+          NEW: ${{ steps.find.outputs.new }}
+          CHANGED: ${{ steps.find.outputs.changed }}
+        run: node .github/scripts/pin-casestudies.mjs --new $NEW --changed $CHANGED
